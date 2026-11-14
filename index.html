@@ -58,7 +58,7 @@ footer{text-align:center;padding:25px;color:#647365;font-size:13px}
 <button data-tab="fertilizer">🧪 Fertilizer</button>
 <button data-tab="expenses">💰 Expenses</button>
 </nav>
-
+id="trees"
 <section class="panel" id="workspace">
 <h2 id="sectionTitle">Farm Records</h2>
 <p class="muted" id="sectionHelp">Manage your farm records here.</p>
@@ -84,6 +84,11 @@ const KEY="myFarmRecordsV1";
 
 const fields={
 trees:[
+["name","Tree name","text"],
+["count","Number of plants","number"],
+["date","Planting date","date"],
+["notes","Growth observations","textarea"]
+],
 ["name","Tree name","text"],["count","Number of plants","number"],
 ["date","Planting date","date"],["notes","Growth observations","textarea"]
 ],
@@ -117,7 +122,7 @@ let data;
 try{
  data=JSON.parse(localStorage.getItem(KEY));
 }catch(e){data=null;}
-
+ 
 if(!data || Array.isArray(data)){
  data={trees:[
  {id:1,name:"Mango",count:40,notes:"Existing plantation"},
@@ -261,7 +266,8 @@ document.getElementById("backup").onclick=()=>{
 };
 
 save();
-openTab("overview");
+openTab("overview");openTab(''overview'');
+ 
 </script>
 </body>
 </html>

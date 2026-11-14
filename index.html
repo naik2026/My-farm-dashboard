@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Farm Dashboard</title>
+<style>
+body{font-family:Arial;background:#f0f5ed;margin:0;color:#26382b}
+header{background:#245c35;color:white;padding:25px}
+main{padding:18px;max-width:850px;margin:auto}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:white;padding:18px;border-radius:12px;margin-bottom:12px}
+.number{font-size:25px;color:#26723c;font-weight:bold}
+input{width:95%;padding:12px;margin:7px 0;border:1px solid #ccc;border-radius:7px}
+button{background:#26723c;color:white;padding:12px;border:0;border-radius:7px}
+@media(max-width:400px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<h1>🌱 My Farm Dashboard</h1>
+<p>3-Acre Farm | Odisha, India</p>
+</header>
+<main>
+<h2>Farm Overview</h2>
+<div class="grid">
+<div class="card">🌳 Farm Area<div class="number">3 Acres</div></div>
+<div class="card">🥭 Mango<div class="number">40 Plants</div></div>
+<div class="card">🍈 Ber<div class="number">40 Plants</div></div>
+<div class="card">🍐 Guava<div class="number">60 Plants</div></div>
+<div class="card">💧 Water Source<div class="number">Borewell</div></div>
+<div class="card">⚡ Pump<div class="number">3 HP</div></div>
+</div>
+
+<h2>Farm Activities</h2>
+<div class="card">
+<ul>
+<li>Tree Plantation</li>
+<li>Vegetable Garden</li>
+<li>Drip Irrigation</li>
+<li>Fertilizer Management</li>
+<li>Garden Development</li>
+</ul>
+</div>
+
+<h2>💰 Expense Tracker</h2>
+<div class="card">
+<input id="name" placeholder="Expense name">
+<input id="amount" type="number" placeholder="Amount in ₹">
+<button onclick="addExpense()">Add Expense</button>
+<h3>Total: ₹<span id="total">0</span></h3>
+<ul id="list"></ul>
+</div>
+</main>
+<script>
+let expenses=[];
+function addExpense(){
+let n=document.getElementById("name").value.trim();
+let a=Number(document.getElementById("amount").value);
+if(!n||a<=0){alert("Enter valid details");return}
+expenses.push({n,a});
+document.getElementById("total").textContent=
+expenses.reduce((s,e)=>s+e.a,0);
+let li=document.createElement("li");
+li.textContent=n+" - ₹"+a;
+document.getElementById("list").appendChild(li);
+document.getElementById("name").value="";
+document.getElementById("amount").value="";
+}
+</script>
+</body>
+</html>
+
+

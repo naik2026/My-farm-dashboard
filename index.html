@@ -1,773 +1,562 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Farm Dashboard | Advanced Management</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Farm Dashboard</title>
+
 <style>
-:root{--green:#176b45;--light:#e8f4ec;--ink:#20312a;--muted:#6b7b72;--line:#e1e9e3;--bg:#f4f7f4;--red:#b33b36;--shadow:0 8px 24px rgba(24,55,37,.07)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Arial,sans-serif}
-header{background:linear-gradient(120deg,#145b3b,#278453);color:white;padding:22px max(18px,calc((100% - 1200px)/2))}
-header h1{margin:0 0 5px;font-size:28px}
-header p{margin:0;color:#e0f0e5;font-size:14px}
-.wrap{max-width:1200px;margin:auto;padding:18px}
-.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
-.card,.panel{background:white;border:1px solid var(--line);border-radius:15px;padding:17px;box-shadow:var(--shadow)}
-.card small{display:block;color:var(--muted);font-size:13px}
-.card strong{display:block;color:var(--green);font-size:27px;margin-top:7px}
-.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 14px}
-.tabs button{white-space:nowrap;border:0;border-radius:10px;background:#e5eee7;color:#315743;padding:11px 14px;font-weight:650;cursor:pointer}
-.tabs button.active{background:var(--green);color:white}
-.panel{margin-bottom:15px}
-.panel h2{font-size:19px;margin:0 0 5px}
-.sub{color:var(--muted);font-size:13px;margin:0 0 15px}
-.grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:15px}
-.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-.field label{display:block;font-size:13px;font-weight:650;margin-bottom:5px}
-.field input,.field select,.field textarea{width:100%;border:1px solid #ccd9cf;border-radius:9px;padding:11px;background:white;font:inherit;color:var(--ink)}
-.field textarea{min-height:70px}
-.full{grid-column:1/-1}
-.btn{border:0;border-radius:9px;padding:10px 14px;font-weight:650;cursor:pointer;background:var(--green);color:white}
-.btn.secondary{background:#e7eee9;color:#315743}
-.btn.danger{background:#fae9e8;color:var(--red)}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
-.tablewrap{overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:580px}
-th,td{text-align:left;padding:10px 9px;border-bottom:1px solid var(--line);font-size:13px}
-th{color:#5a6c61;background:#f7faf7}
-td .btn{padding:6px 9px;font-size:12px}
-.empty{padding:20px;text-align:center;color:var(--muted)}
-.chartbox{height:250px}
-.chartbox canvas{width:100%;height:100%}
-.metricline{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
-.metricline strong{color:var(--green)}
-.notice{background:#fff7e7;border:1px solid #f0dfb8;color:#76551c;padding:11px 13px;border-radius:10px;font-size:13px;margin-bottom:14px}
-.success{background:#eaf5ed;border:1px solid #cfe5d5;color:#245e3d;padding:11px 13px;border-radius:10px;font-size:13px;margin-bottom:14px}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:12px}
-.toolbar input{max-width:260px;border:1px solid #ccd9cf;border-radius:9px;padding:10px;font:inherit}
-footer{text-align:center;color:var(--muted);padding:25px;font-size:12px}
-@media(max-width:800px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2{grid-template-columns:1fr}}
-@media(max-width:480px){.wrap{padding:12px}.card{padding:13px}.card strong{font-size:23px}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}}
+body{margin:0;background:#f1f5ef;color:#263b2c;font-family:Arial,sans-serif}
+header{background:#176b43;color:white;padding:22px 16px}
+header h1{margin:0 0 8px;font-size:25px}
+header p{margin:0;font-size:13px}
+main{max-width:1100px;margin:auto;padding:15px}
+h2{font-size:21px}
+h3{margin-top:5px}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card,.panel{background:white;padding:17px;border-radius:13px;margin-bottom:13px;box-shadow:0 2px 8px #00000008}
+.card small{color:#718078}
+.card strong{display:block;font-size:27px;color:#176b43;margin-top:9px}
+nav{display:flex;gap:7px;overflow-x:auto;padding:10px 0;margin-bottom:12px}
+nav button{white-space:nowrap;border:0;border-radius:9px;padding:12px;background:#dcebdc;color:#24452f;font-size:14px}
+nav button.active{background:#176b43;color:white}
+button{cursor:pointer}
+label{display:block;font-weight:bold;font-size:13px;margin:12px 0 5px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ccd8cc;border-radius:8px;font-size:15px;background:white}
+textarea{min-height:65px}
+.primary{background:#176b43;color:white;border:0;padding:13px 17px;border-radius:8px;font-size:15px}
+.secondary{background:#e5eee5;color:#285b38;border:0;padding:10px 13px;border-radius:8px}
+.danger{background:#fce5e5;color:#a12828;border:0;padding:9px 12px;border-radius:7px}
+.record{background:white;padding:14px;border:1px solid #e0e9df;border-radius:10px;margin:10px 0;overflow-wrap:anywhere}
+.record strong{color:#176b43}
+.record button{margin:7px 5px 0 0}
+.muted{color:#718078;font-size:13px}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1}
+.hidden{display:none!important}
+.progress{height:9px;background:#e5eee5;border-radius:10px;overflow:hidden;margin-top:8px}
+.progress span{display:block;height:100%;background:#258653}
+.barrow{display:grid;grid-template-columns:95px 1fr 65px;gap:8px;align-items:center;margin:12px 0;font-size:13px}
+.bar{height:12px;background:#e6eee5;border-radius:8px;overflow:hidden}
+.bar span{display:block;height:100%;background:#258653}
+footer{text-align:center;padding:22px;color:#718078;font-size:12px}
+@media(min-width:650px){
+.cards{grid-template-columns:repeat(4,1fr)}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 15px}
+}
 </style>
 </head>
-<body>
 
+<body>
 <header>
 <h1>🌱 My Farm Dashboard</h1>
-<p>3-Acre Farm · Odisha, India · Advanced Farm Management</p>
+<p>3-Acre Farm | Odisha, India | Farm Management System</p>
 </header>
 
-<main class="wrap">
+<main>
 
+<section id="overview">
+<h2>Farm Overview</h2>
 <div class="cards">
-<div class="card"><small>🌳 Tree varieties</small><strong id="varietyTotal">0</strong></div>
-<div class="card"><small>🌱 Total trees</small><strong id="treeTotal">0</strong></div>
-<div class="card"><small>🥬 Vegetable crops</small><strong id="cropTotal">0</strong></div>
-<div class="card"><small>💰 Total expenses</small><strong id="expenseTotal">₹0</strong></div>
+<div class="card"><small>🌳 Tree Varieties</small><strong id="treeVarieties">0</strong></div>
+<div class="card"><small>🌱 Total Trees</small><strong id="treeTotal">0</strong></div>
+<div class="card"><small>🥬 Vegetable Crops</small><strong id="cropTotal">0</strong></div>
+<div class="card"><small>💰 Total Expenses</small><strong id="expenseTotal">₹0</strong></div>
+<div class="card"><small>💵 Total Income</small><strong id="incomeTotal">₹0</strong></div>
+<div class="card"><small>📈 Net Profit / Loss</small><strong id="netProfit">₹0</strong></div>
+<div class="card"><small>💧 Irrigation Records</small><strong id="waterTotal">0</strong></div>
+<div class="card"><small>🧪 Fertilizer Records</small><strong id="fertTotal">0</strong></div>
 </div>
 
-<div class="cards">
-<div class="card"><small>🧺 Harvest quantity</small><strong id="harvestTotal">0 kg</strong></div>
-<div class="card"><small>💵 Farm income</small><strong id="incomeTotal">₹0</strong></div>
-<div class="card"><small>📈 Net balance</small><strong id="profitTotal">₹0</strong></div>
-<div class="card"><small>💧 Irrigation records</small><strong id="irrigationTotal">0</strong></div>
+<div class="panel">
+<h3>🌳 Farm Plantation Summary</h3>
+<div id="treeSummary"></div>
+<h3>🥬 Vegetable Crops</h3>
+<div id="cropSummary"></div>
 </div>
 
-<div id="notice" class="success">Your records are stored in this browser. Download backups regularly.</div>
+<div class="panel">
+<h3>📊 Monthly Financial Report</h3>
+<div id="monthlyChart"></div>
+</div>
 
-<nav class="tabs" id="tabs">
-<button class="active" data-tab="overview">📊 Overview</button>
+<div class="panel">
+<h3>💰 Financial Summary</h3>
+<div id="financialSummary"></div>
+</div>
+</section>
+
+<nav id="tabs">
+<button class="active" data-tab="overview">🏠 Overview</button>
 <button data-tab="trees">🌳 Trees</button>
 <button data-tab="crops">🥬 Vegetables</button>
 <button data-tab="irrigation">💧 Irrigation</button>
 <button data-tab="borewell">🚰 Borewell</button>
 <button data-tab="fertilizer">🧪 Fertilizer</button>
 <button data-tab="expenses">💰 Expenses</button>
-<button data-tab="harvest">🧺 Harvest</button>
 <button data-tab="income">💵 Income</button>
-<button data-tab="reports">📈 Reports</button>
-<button data-tab="backup">🛡️ Backup</button>
+<button data-tab="reports">📊 Reports</button>
+<button data-tab="backup">📥 Backup</button>
 </nav>
 
-<section id="view"></section>
-</main>
+<section id="workspace" class="panel hidden">
+<h2 id="sectionTitle"></h2>
+<p class="muted" id="sectionHelp"></p>
+
+<form id="recordForm">
+<input type="hidden" id="editId">
+<div class="formgrid" id="formFields"></div>
+<button type="submit" class="primary" id="saveButton">Save Record</button>
+<button type="button" class="secondary hidden" id="cancelEdit">Cancel Edit</button>
+</form>
+
+<hr style="border:0;border-top:1px solid #e5eee5;margin:20px 0">
+
+<div class="row">
+<input id="searchRecords" placeholder="Search records...">
+<select id="sortRecords">
+<option value="newest">Newest first</option>
+<option value="oldest">Oldest first</option>
+</select>
+</div>
+
+<h3>Saved Records</h3>
+<div id="records"></div>
+</section>
+
+<section id="reports" class="panel hidden">
+<h2>📊 Farm Reports</h2>
+<div id="reportContent"></div>
+<button class="primary" onclick="downloadCSV()">Download CSV Report</button>
+</section>
+
+<section id="backup" class="panel hidden">
+<h2>📥 Farm Data Backup</h2>
+<p class="muted">Download your farm records regularly. Keep a safe copy.</p>
+<button class="primary" onclick="downloadBackup()">Download Backup JSON</button>
+<label>Restore previous backup</label>
+<input type="file" id="restoreFile" accept=".json,application/json">
+<p class="muted">Restoring a backup replaces the current records. Download a backup first.</p>
+</section>
 
 <footer>My Farm Dashboard · 3-Acre Farm · Odisha, India</footer>
+</main>
 
 <script>
-(() => {
-'use strict';
+const KEY="myFarmRecordsV1";
 
-const KEY='myFarmRecordsV1';
-const NEWKEY='myFarmAdvancedV2';
-const $=id=>document.getElementById(id);
-const today=()=>new Date().toISOString().slice(0,10);
-const money=n=>'₹'+(Number(n)||0).toLocaleString('en-IN',{maximumFractionDigits:2});
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const configs={
+trees:{
+title:"🌳 Tree Plantation",
+help:"Record tree plantation, quantity and growth.",
+fields:[
+["name","Tree name","text"],
+["count","Number of plants","number"],
+["date","Planting date","date"],
+["notes","Growth observations","textarea"]
+]},
+crops:{
+title:"🥬 Vegetable Management",
+help:"Manage your vegetable cultivation.",
+fields:[
+["name","Crop name","text"],
+["area","Area planted","text"],
+["date","Sowing date","date"],
+["harvest","Expected harvest date","date"],
+["notes","Observations","textarea"]
+]},
+irrigation:{
+title:"💧 Irrigation Management",
+help:"Track watering and pump operation.",
+fields:[
+["date","Watering date","date"],
+["hours","Pump running hours","number"],
+["water","Water quantity (litres)","number"],
+["notes","Details","textarea"]
+]},
+borewell:{
+title:"🚰 Borewell Management",
+help:"Track water level and borewell maintenance.",
+fields:[
+["date","Record date","date"],
+["level","Water level / depth (ft)","number"],
+["maintenance","Maintenance details","text"],
+["notes","Observations","textarea"]
+]},
+fertilizer:{
+title:"🧪 Fertilizer & Pesticide",
+help:"Track fertilizer and pesticide applications.",
+fields:[
+["date","Application date","date"],
+["product","Product name","text"],
+["quantity","Quantity used","text"],
+["crop","Crop / tree","text"],
+["notes","Application details","textarea"]
+]},
+expenses:{
+title:"💰 Farm Expenses",
+help:"Record all farm expenditure.",
+fields:[
+["date","Date","date"],
+["type","Expense category","select"],
+["amount","Amount (₹)","number"],
+["details","Description","text"]
+]},
+income:{
+title:"💵 Farm Income",
+help:"Record sales of fruits, vegetables and other farm income.",
+fields:[
+["date","Income date","date"],
+["type","Income category","select"],
+["amount","Amount (₹)","number"],
+["details","Description","text"]
+]}
+};
 
-const blank=()=>({
-trees:[],crops:[],irrigation:[],borewell:[],
-fertilizer:[],expenses:[],harvest:[],income:[]
+const categories=["Labour","Fertilizer","Pesticide","Irrigation","Electricity","Seeds and plants","Equipment","Transport","Other"];
+const incomeCategories=["Fruit sales","Vegetable sales","Plant sales","Other income"];
+
+function defaults(){
+return {
+trees:[
+{id:1,name:"Mango",count:40,notes:"Existing plantation"},
+{id:2,name:"Ber",count:40,notes:"Existing plantation"},
+{id:3,name:"Guava",count:60,notes:"Existing plantation"}
+],
+crops:[
+{id:4,name:"Tomato"},
+{id:5,name:"Brinjal"},
+{id:6,name:"Chilli"},
+{id:7,name:"Beans"}
+],
+irrigation:[],
+borewell:[],
+fertilizer:[],
+expenses:[],
+income:[]
+};
+}
+
+function cleanData(raw){
+const base=defaults();
+if(!raw||typeof raw!=="object")return base;
+
+Object.keys(base).forEach(k=>{
+if(Array.isArray(raw[k]))base[k]=raw[k];
 });
 
-let data=blank(),tab='overview',editing=null;
+// Remove only exact duplicate default tree entries.
+// Different planting batches are preserved.
+const seen=new Set();
+base.trees=base.trees.filter(t=>{
+const signature=[t.name,t.count,t.date||"",t.notes||""].join("|").toLowerCase();
+if(seen.has(signature))return false;
+seen.add(signature);
+return true;
+});
+return base;
+}
 
-function load(){
+let data;
 try{
-const newer=JSON.parse(localStorage.getItem(NEWKEY)||'null');
-const older=JSON.parse(localStorage.getItem(KEY)||'null');
-const src=newer||older;
-if(src&&typeof src==='object'){
-Object.keys(data).forEach(k=>{
-if(Array.isArray(src[k]))data[k]=src[k];
-});
-}
-}catch(e){console.warn(e);}
-
-if(!data.trees.length){
-data.trees=[
-{id:uid(),name:'Mango',count:40,date:'',notes:'Existing plantation'},
-{id:uid(),name:'Ber',count:40,date:'',notes:'Existing plantation'},
-{id:uid(),name:'Guava',count:60,date:'',notes:'Existing plantation'}
-];
-}
-
-if(!data.crops.length){
-data.crops=['Tomato','Brinjal','Chilli','Beans'].map(name=>({
-id:uid(),name,area:'',date:'',harvest:'',notes:''
-}));
-}
-
-save();
+data=cleanData(JSON.parse(localStorage.getItem(KEY)));
+}catch(e){
+data=defaults();
 }
 
 function save(){
 try{
-localStorage.setItem(NEWKEY,JSON.stringify(data));
 localStorage.setItem(KEY,JSON.stringify(data));
 }catch(e){
-alert('Storage is full. Download a backup and remove some records.');
+alert("Storage is full. Download a backup and clear some data.");
 throw e;
 }
 }
 
-const configs={
+let current="overview";
 
-trees:{
-title:'Tree Plantation',
-desc:'Maintain variety-wise plantation count and growth observations.',
-fields:[
-['name','Tree name','text',true],
-['count','Number of plants','number',true],
-['date','Planting date','date'],
-['notes','Growth observations','textarea']
-]
-},
-
-crops:{
-title:'Vegetable Crops',
-desc:'Track crop area, sowing dates and expected harvest.',
-fields:[
-['name','Crop name','text',true],
-['area','Area planted (acre)','number'],
-['date','Sowing date','date'],
-['harvest','Expected harvest date','date'],
-['notes','Observations','textarea']
-]
-},
-
-irrigation:{
-title:'Irrigation Log',
-desc:'Record pump running hours and water usage.',
-fields:[
-['date','Watering date','date',true],
-['hours','Pump running hours','number'],
-['water','Water quantity (litres)','number'],
-['method','Irrigation method','select',['Drip','Sprinkler','Hose pipe','Flood']],
-['notes','Details','textarea']
-]
-},
-
-borewell:{
-title:'Borewell Log',
-desc:'Track water level, depth and maintenance.',
-fields:[
-['date','Record date','date',true],
-['level','Water level / depth (ft)','number'],
-['maintenance','Maintenance details','text'],
-['notes','Observations','textarea']
-]
-},
-
-fertilizer:{
-title:'Fertilizer & Plant Protection',
-desc:'Record fertilizer, pesticide and organic treatment applications.',
-fields:[
-['date','Application date','date',true],
-['product','Product / fertilizer name','text',true],
-['quantity','Quantity used','text'],
-['crop','Crop / tree','text'],
-['notes','Application details','textarea']
-]
-},
-
-expenses:{
-title:'Farm Expenses',
-desc:'Record labour, fertilizer, irrigation, electricity and other costs.',
-fields:[
-['date','Expense date','date',true],
-['type','Expense category','select',['Labour','Fertilizer','Pesticide','Irrigation','Electricity','Seeds and plants','Equipment','Transport','Maintenance','Other']],
-['amount','Amount (₹)','number',true],
-['details','Description','text']
-]
-},
-
-harvest:{
-title:'Harvest Register',
-desc:'Record crop/tree harvest quantity and quality.',
-fields:[
-['date','Harvest date','date',true],
-['crop','Crop / tree name','text',true],
-['quantity','Quantity (kg)','number',true],
-['quality','Grade / quality','select',['A Grade','B Grade','C Grade','Mixed']],
-['notes','Notes','textarea']
-]
-},
-
-income:{
-title:'Farm Income',
-desc:'Record sales and other farm income.',
-fields:[
-['date','Income date','date',true],
-['source','Crop / product sold','text',true],
-['quantity','Quantity sold (kg / units)','number'],
-['rate','Rate per unit (₹)','number'],
-['amount','Total amount received (₹)','number',true],
-['buyer','Buyer / market','text'],
-['notes','Details','textarea']
-]
+function money(n){
+return "₹"+Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:2});
 }
 
-};
-
-function total(key,field){
-return data[key].reduce((s,r)=>s+(Number(r[field])||0),0);
+function total(arr,key){
+return arr.reduce((s,r)=>s+(Number(r[key])||0),0);
 }
 
-function updateStats(){
-$('varietyTotal').textContent=data.trees.length;
-$('treeTotal').textContent=total('trees','count').toLocaleString('en-IN');
-$('cropTotal').textContent=data.crops.length;
-
-const ex=total('expenses','amount');
-const inc=total('income','amount');
-
-$('expenseTotal').textContent=money(ex);
-$('incomeTotal').textContent=money(inc);
-$('profitTotal').textContent=money(inc-ex);
-$('harvestTotal').textContent=total('harvest','quantity').toLocaleString('en-IN')+' kg';
-$('irrigationTotal').textContent=data.irrigation.length;
-}
-
-function esc(s){
-return String(s??'').replace(/[&<>"']/g,c=>({
-'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+function safe(value){
+return String(value??"").replace(/[&<>"']/g,c=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",
+'"':"&quot;","'":"&#39;"
 }[c]));
 }
 
-function fieldHtml(f,v=''){
-const [key,label,type,required,opts]=f;
-let el='';
+function showOverview(){
+const expenses=total(data.expenses,"amount");
+const income=total(data.income,"amount");
+const trees=total(data.trees,"count");
 
-if(type==='textarea'){
-el=`<textarea id="f_${key}" ${required?'required':''}>${esc(v)}</textarea>`;
-}
-else if(type==='select'){
-el=`<select id="f_${key}" ${required?'required':''}>
-<option value="">Select</option>
-${opts.map(o=>`<option value="${esc(o)}" ${v===o?'selected':''}>${esc(o)}</option>`).join('')}
-</select>`;
-}
-else{
-el=`<input id="f_${key}" type="${type}" value="${esc(v)}"
-${required?'required':''} ${type==='number'?'min="0" step="any"':''}>`;
-}
+document.getElementById("treeVarieties").textContent=data.trees.length;
+document.getElementById("treeTotal").textContent=trees;
+document.getElementById("cropTotal").textContent=data.crops.length;
+document.getElementById("expenseTotal").textContent=money(expenses);
+document.getElementById("incomeTotal").textContent=money(income);
+document.getElementById("netProfit").textContent=money(income-expenses);
+document.getElementById("netProfit").style.color=income-expenses>=0?"#176b43":"#c0392b";
+document.getElementById("waterTotal").textContent=data.irrigation.length;
+document.getElementById("fertTotal").textContent=data.fertilizer.length;
 
-return `<div class="field ${type==='textarea'?'full':''}">
-<label for="f_${key}">${label}${required?' *':''}</label>${el}
-</div>`;
-}
+document.getElementById("treeSummary").innerHTML=
+data.trees.length?data.trees.map(t=>
+`<div class="barrow">
+<span>${safe(t.name)}</span>
+<div class="bar"><span style="width:${Math.min(100,Number(t.count)/Math.max(1,trees)*100)}%"></span></div>
+<b>${Number(t.count)||0}</b>
+</div>`).join(""):"No tree records";
 
-function formPanel(key){
-const c=configs[key];
-const rec=editing&&editing.key===key?data[key].find(x=>x.id===editing.id):null;
+document.getElementById("cropSummary").innerHTML=
+data.crops.length?data.crops.map(c=>
+`<span class="secondary" style="display:inline-block;margin:4px;padding:8px">${safe(c.name)}</span>`).join(""):"No crops";
 
-return `<div class="panel">
-<h2>${rec?'Edit':'Add'} ${c.title}</h2>
-<p class="sub">${c.desc}</p>
-<form id="entryForm" class="formgrid">
-${c.fields.map(f=>fieldHtml(f,rec?.[f[0]]??(f[0]==='date'?today():''))).join('')}
-<div class="actions full">
-<button class="btn" type="submit">${rec?'Update record':'Save record'}</button>
-${rec?'<button class="btn secondary" type="button" id="cancelEdit">Cancel</button>':''}
-</div>
-</form>
-</div>`;
+document.getElementById("financialSummary").innerHTML=`
+<p>Total income: <b>${money(income)}</b></p>
+<p>Total expenses: <b>${money(expenses)}</b></p>
+<p>Net profit/loss: <b>${money(income-expenses)}</b></p>
+<p>Tree count: <b>${trees}</b></p>`;
+
+monthlyChart();
 }
 
-function recordsTable(key){
-const c=configs[key],rows=data[key];
-const cols=c.fields.filter(f=>f[0]!=='notes').slice(0,5);
-
-return `<div class="panel">
-<div class="toolbar">
-<div><h2>Saved ${c.title} Records</h2><p class="sub">${rows.length} record(s)</p></div>
-<input id="searchRows" placeholder="Search records…">
-</div>
-<div class="tablewrap">
-<table>
-<thead><tr>${cols.map(f=>`<th>${f[1]}</th>`).join('')}<th>Action</th></tr></thead>
-<tbody id="rowsBody">
-${rows.slice().reverse().map(r=>rowHtml(r,cols)).join('')||'<tr><td colspan="8">No records added yet.</td></tr>'}
-</tbody>
-</table>
-</div>
-</div>`;
-}
-
-function rowHtml(r,cols){
-return `<tr>
-${cols.map(f=>`<td>${esc(r[f[0]]??'—')}</td>`).join('')}
-<td>
-<button class="btn secondary" data-edit="${esc(r.id)}">Edit</button>
-<button class="btn danger" data-delete="${esc(r.id)}">Delete</button>
-</td>
-</tr>`;
-}
-
-function bindRecordActions(key){
-const search=$('searchRows');
-
-if(search){
-search.addEventListener('input',()=>{
-const q=search.value.toLowerCase();
-$('rowsBody').innerHTML=data[key].slice().reverse()
-.filter(r=>JSON.stringify(r).toLowerCase().includes(q))
-.map(r=>rowHtml(r,configs[key].fields.filter(f=>f[0]!=='notes').slice(0,5)))
-.join('')||'<tr><td colspan="8">No matching records</td></tr>';
-
-bindRowButtons(key);
-});
-}
-
-bindRowButtons(key);
-}
-
-function bindRowButtons(key){
-document.querySelectorAll('[data-edit]').forEach(b=>{
-b.onclick=()=>{
-editing={key,id:b.dataset.edit};
-render();
-};
-});
-
-document.querySelectorAll('[data-delete]').forEach(b=>{
-b.onclick=()=>{
-if(confirm('Delete this record?')){
-data[key]=data[key].filter(r=>r.id!==b.dataset.delete);
-save();
-editing=null;
-render();
-showMsg('Record deleted.');
-}
-};
-});
-}
-
-function bindForm(key){
-const form=$('entryForm');
-if(!form)return;
-
-form.onsubmit=e=>{
-e.preventDefault();
-
-const obj={};
-
-for(const f of configs[key].fields){
-const el=$('f_'+f[0]);
-obj[f[0]]=el?el.value.trim():'';
-
-if(f[2]==='number'&&obj[f[0]]!==''&&Number(obj[f[0]])<0){
-return alert('Please enter a valid positive number.');
-}
-}
-
-if(key==='income'&&!obj.amount&&obj.quantity&&obj.rate){
-obj.amount=String(Number(obj.quantity)*Number(obj.rate));
-}
-
-if(key==='expenses'||key==='income'){
-if(!Number.isFinite(Number(obj.amount))||Number(obj.amount)<=0){
-return alert('Please enter a valid amount.');
-}
-}
-
-const existing=editing&&editing.key===key
-?data[key].find(r=>r.id===editing.id):null;
-
-if(existing)Object.assign(existing,obj);
-else data[key].push({id:uid(),...obj});
-
-save();
-editing=null;
-render();
-showMsg('Record saved successfully.');
-};
-
-const cancel=$('cancelEdit');
-if(cancel)cancel.onclick=()=>{
-editing=null;
-render();
-};
-}
-
-function showMsg(t){
-const n=$('notice');
-n.textContent=t;
-n.className='success';
-}
-
-function overview(){
-const ex=total('expenses','amount');
-const inc=total('income','amount');
-
-return `<div class="grid2">
-<div class="panel">
-<h2>Farm Summary</h2>
-<p class="sub">Current plantation and crop position</p>
-<div class="metricline"><span>Tree varieties</span><strong>${data.trees.length}</strong></div>
-<div class="metricline"><span>Total trees</span><strong>${total('trees','count')}</strong></div>
-<div class="metricline"><span>Vegetable crops</span><strong>${data.crops.length}</strong></div>
-<div class="metricline"><span>Harvest quantity</span><strong>${total('harvest','quantity')} kg</strong></div>
-<div class="metricline"><span>Total expenses</span><strong>${money(ex)}</strong></div>
-<div class="metricline"><span>Total income</span><strong>${money(inc)}</strong></div>
-<div class="metricline"><span>Net balance</span><strong>${money(inc-ex)}</strong></div>
-</div>
-
-<div class="panel">
-<h2>Plantation Breakdown</h2>
-<p class="sub">Tree count by variety</p>
-${data.trees.length?data.trees.map(t=>`
-<div class="metricline">
-<span>${esc(t.name)}</span>
-<strong>${Number(t.count)||0} plants</strong>
-</div>`).join(''):'<div class="empty">No trees added</div>'}
-</div>
-</div>
-
-<div class="panel">
-<h2>Recent Activity</h2>
-<p class="sub">Latest farm records</p>
-${recentActivity()}
-</div>`;
-}
-
-function recentActivity(){
-const all=[];
-
-Object.entries(configs).forEach(([k,c])=>{
-data[k].forEach(r=>all.push({
-title:c.title,
-date:r.date||'',
-label:r.name||r.crop||r.source||r.product||r.type||c.title,
-amount:r.amount
-}));
-});
-
-all.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-
-if(!all.length)return '<div class="empty">No farm activity recorded yet.</div>';
-
-return `<div class="tablewrap">
-<table>
-<thead><tr><th>Date</th><th>Type</th><th>Details</th><th>Amount</th></tr></thead>
-<tbody>
-${all.slice(0,8).map(x=>`
-<tr>
-<td>${esc(x.date||'—')}</td>
-<td>${esc(x.title)}</td>
-<td>${esc(x.label)}</td>
-<td>${x.amount?money(x.amount):'—'}</td>
-</tr>`).join('')}
-</tbody>
-</table>
-</div>`;
-}
-
-function reports(){
-const ex=total('expenses','amount');
-const inc=total('income','amount');
-const har=total('harvest','quantity');
-
-return `<div class="grid2">
-<div class="panel">
-<h2>Financial Summary</h2>
-<p class="sub">Based on saved income and expense records</p>
-<div class="metricline"><span>Total income</span><strong>${money(inc)}</strong></div>
-<div class="metricline"><span>Total expenses</span><strong>${money(ex)}</strong></div>
-<div class="metricline"><span>Net profit / loss</span><strong>${money(inc-ex)}</strong></div>
-<div class="metricline"><span>Profit margin</span><strong>${inc?((inc-ex)/inc*100).toFixed(1)+'%':'—'}</strong></div>
-</div>
-
-<div class="panel">
-<h2>Production Summary</h2>
-<div class="metricline"><span>Total trees</span><strong>${total('trees','count')}</strong></div>
-<div class="metricline"><span>Crop varieties</span><strong>${data.crops.length}</strong></div>
-<div class="metricline"><span>Harvest quantity</span><strong>${har} kg</strong></div>
-<div class="metricline"><span>Irrigation pump hours</span><strong>${total('irrigation','hours')} hrs</strong></div>
-</div>
-</div>
-
-<div class="panel">
-<h2>Monthly Income vs Expenses</h2>
-<p class="sub">Monthly totals from recorded transactions</p>
-<div class="chartbox"><canvas id="financeChart" width="900" height="250"></canvas></div>
-</div>
-
-<div class="panel">
-<h2>Expense Categories</h2>
-<div class="chartbox"><canvas id="expenseChart" width="900" height="250"></canvas></div>
-</div>`;
-}
-
-function drawBars(canvasId,labels,series){
-const c=$(canvasId);
-if(!c)return;
-
-const ctx=c.getContext('2d');
-const w=c.width,h=c.height;
-ctx.clearRect(0,0,w,h);
-
-const pad={l:55,r:20,t:18,b:42};
-const pw=w-pad.l-pad.r,ph=h-pad.t-pad.b;
-let max=Math.max(1,...series.flatMap(s=>s.values));
-
-ctx.strokeStyle='#dfe8e1';
-ctx.fillStyle='#64766b';
-ctx.font='13px Arial';
-
-for(let i=0;i<=4;i++){
-let y=pad.t+ph*i/4;
-ctx.beginPath();
-ctx.moveTo(pad.l,y);
-ctx.lineTo(w-pad.r,y);
-ctx.stroke();
-ctx.fillText(Math.round(max*(4-i)/4).toLocaleString('en-IN'),5,y+4);
-}
-
-const group=pw/Math.max(1,labels.length);
-const bw=Math.min(28,group/(series.length+1));
-
-labels.forEach((lab,i)=>{
-series.forEach((s,j)=>{
-let v=s.values[i]||0;
-let bh=v/max*ph;
-let x=pad.l+i*group+group/2+(j-(series.length-1)/2)*(bw+4)-bw/2;
-let y=pad.t+ph-bh;
-ctx.fillStyle=s.color;
-ctx.fillRect(x,y,bw,bh);
-});
-
-ctx.fillStyle='#52645a';
-ctx.textAlign='center';
-ctx.fillText(lab,pad.l+i*group+group/2,h-13);
-});
-
-ctx.textAlign='left';
-let lx=pad.l;
-
-series.forEach(s=>{
-ctx.fillStyle=s.color;
-ctx.fillRect(lx,3,12,12);
-ctx.fillStyle='#43564a';
-ctx.fillText(s.name,lx+17,14);
-lx+=115;
-});
-}
-
-function drawReports(){
-const months=Array.from({length:6},(_,i)=>{
+function monthlyChart(){
+const box=document.getElementById("monthlyChart");
+const months=[];
+for(let i=5;i>=0;i--){
 const d=new Date();
-d.setMonth(d.getMonth()-(5-i));
-return d.toISOString().slice(0,7);
+d.setDate(1);
+d.setMonth(d.getMonth()-i);
+const key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");
+const expenses=data.expenses.filter(x=>(x.date||"").startsWith(key)).reduce((s,x)=>s+Number(x.amount||0),0);
+const income=data.income.filter(x=>(x.date||"").startsWith(key)).reduce((s,x)=>s+Number(x.amount||0),0);
+months.push({name:d.toLocaleString("en-IN",{month:"short"}),expenses,income});
+}
+const max=Math.max(1,...months.flatMap(m=>[m.expenses,m.income]));
+box.innerHTML=months.map(m=>`
+<div class="record">
+<b>${m.name}</b>
+<div class="barrow"><span>Income</span><div class="bar"><span style="width:${m.income/max*100}%"></span></div>${money(m.income)}</div>
+<div class="barrow"><span>Expense</span><div class="bar"><span style="width:${m.expenses/max*100}%;background:#d58c38"></span></div>${money(m.expenses)}</div>
+</div>`).join("");
+}
+
+function openTab(tab){
+current=tab;
+document.querySelectorAll("nav button").forEach(b=>{
+b.classList.toggle("active",b.dataset.tab===tab);
 });
-
-const sum=(arr,m)=>arr.filter(r=>(r.date||'').slice(0,7)===m)
-.reduce((s,r)=>s+(Number(r.amount)||0),0);
-
-drawBars('financeChart',months.map(m=>m.slice(5)),[
-{name:'Income',color:'#238453',values:months.map(m=>sum(data.income,m))},
-{name:'Expenses',color:'#d58b35',values:months.map(m=>sum(data.expenses,m))}
-]);
-
-const cats=[...new Set(data.expenses.map(x=>x.type||'Other'))];
-
-drawBars('expenseChart',cats.length?cats:['No data'],[
-{name:'Expenses',color:'#238453',
-values:cats.length?cats.map(c=>data.expenses.filter(x=>x.type===c)
-.reduce((s,r)=>s+(Number(r.amount)||0),0)):[0]}
-]);
-}
-
-function backup(){
-return `<div class="grid2">
-<div class="panel">
-<h2>Backup Your Farm Data</h2>
-<p class="sub">Download a JSON copy of all records.</p>
-<button class="btn" id="downloadBackup">⬇ Download Farm Backup</button>
-<div class="field" style="margin-top:16px">
-<label for="restoreFile">Restore from backup file</label>
-<input id="restoreFile" type="file" accept="application/json">
-</div>
-<div class="actions">
-<button class="btn secondary" id="restoreBackup">Restore Backup</button>
-</div>
-</div>
-
-<div class="panel">
-<h2>Export Records</h2>
-<p class="sub">Download individual registers as CSV files for Excel.</p>
-${Object.keys(configs).map(k=>`
-<div class="metricline">
-<span>${configs[k].title}</span>
-<button class="btn secondary" data-csv="${k}">Export CSV</button>
-</div>`).join('')}
-</div>
-</div>
-
-<div class="notice">
-Important: Browser storage is local to this device and browser. Clearing website data may erase records. Download backups regularly.
-</div>`;
-}
-
-function download(name,content,type){
-const blob=new Blob([content],{type});
-const url=URL.createObjectURL(blob);
-const a=document.createElement('a');
-a.href=url;
-a.download=name;
-document.body.appendChild(a);
-a.click();
-a.remove();
-setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-
-function exportCSV(key){
-const rows=data[key];
-if(!rows.length)return alert('No records to export.');
-
-const keys=[...new Set(rows.flatMap(Object.keys))];
-const csv=[
-keys.join(','),
-...rows.map(r=>keys.map(k=>'"'+String(r[k]??'').replace(/"/g,'""')+'"').join(','))
-].join('\n');
-
-download(key+'-records.csv','\ufeff'+csv,'text/csv;charset=utf-8;');
-}
-
-function bindBackup(){
-const d=$('downloadBackup');
-
-if(d)d.onclick=()=>download(
-'my-farm-backup.json',
-JSON.stringify(data,null,2),
-'application/json'
-);
-
-document.querySelectorAll('[data-csv]').forEach(b=>{
-b.onclick=()=>exportCSV(b.dataset.csv);
-});
-
-const rb=$('restoreBackup');
-
-if(rb)rb.onclick=()=>{
-const f=$('restoreFile').files[0];
-if(!f)return alert('Please select a backup JSON file first.');
-
-const reader=new FileReader();
-
-reader.onload=()=>{
-try{
-const obj=JSON.parse(reader.result);
-if(!obj||typeof obj!=='object')throw Error();
-
-Object.keys(data).forEach(k=>{
-if(Array.isArray(obj[k]))data[k]=obj[k];
-});
-
-save();
-editing=null;
-render();
-showMsg('Backup restored successfully.');
-}catch(e){
-alert('Invalid backup file. No data was changed.');
-}
-};
-
-reader.readAsText(f);
-};
-}
-
-function render(){
-updateStats();
-
-document.querySelectorAll('#tabs button').forEach(b=>{
-b.classList.toggle('active',b.dataset.tab===tab);
-});
-
-const v=$('view');
-
-if(tab==='overview'){
-v.innerHTML=overview();
-return;
-}
-
-if(tab==='reports'){
-v.innerHTML=reports();
-drawReports();
-return;
-}
-
-if(tab==='backup'){
-v.innerHTML=backup();
-bindBackup();
-return;
-}
+document.getElementById("overview").classList.toggle("hidden",tab!=="overview");
+document.getElementById("workspace").classList.toggle("hidden",!configs[tab]);
+document.getElementById("reports").classList.toggle("hidden",tab!=="reports");
+document.getElementById("backup").classList.toggle("hidden",tab!=="backup");
 
 if(configs[tab]){
-v.innerHTML=formPanel(tab)+recordsTable(tab);
-bindForm(tab);
-bindRecordActions(tab);
+document.getElementById("sectionTitle").textContent=configs[tab].title;
+document.getElementById("sectionHelp").textContent=configs[tab].help;
+buildForm(tab);
+renderRecords();
+}
+if(tab==="overview")showOverview();
+if(tab==="reports")renderReports();
+}
+
+document.getElementById("tabs").addEventListener("click",e=>{
+const b=e.target.closest("button[data-tab]");
+if(b)openTab(b.dataset.tab);
+});
+
+function buildForm(tab,record={}){
+const config=configs[tab];
+const box=document.getElementById("formFields");
+box.innerHTML="";
+
+config.fields.forEach(([key,label,type])=>{
+const wrap=document.createElement("div");
+const lab=document.createElement("label");
+lab.textContent=label;
+lab.htmlFor="field_"+key;
+let el;
+
+if(type==="textarea"){
+el=document.createElement("textarea");
+}else if(type==="select"){
+el=document.createElement("select");
+const opts=tab==="expenses"?categories:incomeCategories;
+el.innerHTML='<option value="">Select category</option>'+opts.map(x=>`<option>${safe(x)}</option>`).join("");
+}else{
+el=document.createElement("input");
+el.type=type;
+if(type==="number")el.min="0";
+}
+el.id="field_"+key;
+el.name=key;
+el.required=["name","count","date","amount","type"].includes(key);
+el.value=record[key]??"";
+wrap.append(lab,el);
+box.appendChild(wrap);
+});
+
+document.getElementById("editId").value=record.id||"";
+document.getElementById("saveButton").textContent=record.id?"Update Record":"Save Record";
+document.getElementById("cancelEdit").classList.toggle("hidden",!record.id);
+}
+
+document.getElementById("recordForm").addEventListener("submit",e=>{
+e.preventDefault();
+const tab=current;
+const record={};
+configs[tab].fields.forEach(([key])=>{
+record[key]=document.getElementById("field_"+key).value.trim();
+});
+if((record.count!==undefined&&Number(record.count)<=0)||
+(record.amount!==undefined&&Number(record.amount)<0)){
+alert("Please enter a valid quantity or amount.");
+return;
+}
+if(record.hours!==undefined&&Number(record.hours)<0)return alert("Invalid pump hours.");
+if(record.water!==undefined&&Number(record.water)<0)return alert("Invalid water quantity.");
+
+record.id=document.getElementById("editId").value?
+Number(document.getElementById("editId").value):Date.now();
+
+const index=data[tab].findIndex(x=>String(x.id)===String(record.id));
+if(index>=0)data[tab][index]=record;
+else data[tab].push(record);
+
+try{save();}catch(e){return;}
+e.target.reset();
+buildForm(tab);
+renderRecords();
+showOverview();
+alert(index>=0?"Record updated successfully!":"Record saved successfully!");
+});
+
+document.getElementById("cancelEdit").onclick=()=>{
+document.getElementById("recordForm").reset();
+buildForm(current);
+};
+
+function renderRecords(){
+const list=document.getElementById("records");
+const search=document.getElementById("searchRecords").value.toLowerCase();
+const sort=document.getElementById("sortRecords").value;
+let records=[...data[current]];
+
+records.sort((a,b)=>{
+const x=a.date||"",y=b.date||"";
+return sort==="newest"?y.localeCompare(x):x.localeCompare(y);
+});
+
+records=records.filter(r=>Object.values(r).join(" ").toLowerCase().includes(search));
+
+if(!records.length){
+list.innerHTML='<p class="muted">No records found. Add your first record above.</p>';
 return;
 }
 
-v.innerHTML='<div class="panel">Section unavailable.</div>';
+list.innerHTML=records.map(r=>{
+const fields=configs[current].fields;
+return `<div class="record">
+${fields.map(([key,label])=>r[key]!==undefined&&r[key]!==""?
+`<p><b>${safe(label)}:</b> ${key==="amount"?money(r[key]):safe(r[key])}</p>`:"").join("")}
+<div>
+<button class="secondary" onclick="editRecord('${current}',${Number(r.id)})">✏️ Edit</button>
+<button class="danger" onclick="deleteRecord('${current}',${Number(r.id)})">🗑 Delete</button>
+</div></div>`;
+}).join("");
 }
 
-$('tabs').addEventListener('click',e=>{
-const b=e.target.closest('button[data-tab]');
-if(!b)return;
+function editRecord(tab,id){
+const r=data[tab].find(x=>Number(x.id)===Number(id));
+if(!r)return;
+openTab(tab);
+buildForm(tab,r);
+document.getElementById("workspace").scrollIntoView({behavior:"smooth"});
+}
 
-tab=b.dataset.tab;
-editing=null;
-render();
+function deleteRecord(tab,id){
+if(!confirm("Delete this record permanently?"))return;
+data[tab]=data[tab].filter(x=>Number(x.id)!==Number(id));
+save();
+renderRecords();
+showOverview();
+}
+
+document.getElementById("searchRecords").addEventListener("input",renderRecords);
+document.getElementById("sortRecords").addEventListener("change",renderRecords);
+
+function renderReports(){
+const expenses=total(data.expenses,"amount");
+const income=total(data.income,"amount");
+document.getElementById("reportContent").innerHTML=`
+<h3>Farm Performance</h3>
+<div class="record">Total trees: <b>${total(data.trees,"count")}</b></div>
+<div class="record">Tree varieties: <b>${data.trees.length}</b></div>
+<div class="record">Vegetable crops: <b>${data.crops.length}</b></div>
+<div class="record">Irrigation records: <b>${data.irrigation.length}</b></div>
+<div class="record">Borewell records: <b>${data.borewell.length}</b></div>
+<div class="record">Fertilizer applications: <b>${data.fertilizer.length}</b></div>
+<h3>Financial Performance</h3>
+<div class="record">Total income: <b>${money(income)}</b></div>
+<div class="record">Total expenses: <b>${money(expenses)}</b></div>
+<div class="record">Net profit/loss: <b>${money(income-expenses)}</b></div>
+<h3>Plantation Details</h3>
+${data.trees.map(t=>`<p>${safe(t.name)}: ${t.count} plants</p>`).join("")}`;
+}
+
+function downloadBackup(){
+const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+const url=URL.createObjectURL(blob);
+const a=document.createElement("a");
+a.href=url;a.download="my-farm-backup.json";a.click();
+URL.revokeObjectURL(url);
+}
+
+document.getElementById("restoreFile").addEventListener("change",async e=>{
+const file=e.target.files[0];
+if(!file)return;
+if(!confirm("This will replace current records. Have you downloaded a backup?"))return;
+try{
+const restored=JSON.parse(await file.text());
+if(!restored||typeof restored!=="object")throw Error("Invalid backup");
+data=cleanData(restored);
+save();
+showOverview();
+alert("Farm backup restored successfully.");
+openTab("overview");
+}catch(err){alert("Invalid backup file. No records restored.");}
+e.target.value="";
 });
 
-load();
-render();
+function downloadCSV(){
+const rows=[["Category","Date","Name / Details","Quantity / Amount","Notes"]];
+Object.keys(configs).forEach(tab=>{
+data[tab].forEach(r=>{
+rows.push([tab,r.date||"",r.name||r.product||r.type||r.details||"",
+r.count||r.amount||r.water||r.quantity||"",r.notes||r.details||""]);
+});
+});
+const csv=rows.map(row=>row.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\n");
+const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
+const url=URL.createObjectURL(blob);
+const a=document.createElement("a");
+a.href=url;a.download="farm-report.csv";a.click();
+URL.revokeObjectURL(url);
+}
 
-})();
+// Start dashboard
+save();
+showOverview();
+openTab("overview");
 </script>
 </body>
 </html>

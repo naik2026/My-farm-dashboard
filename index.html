@@ -1,568 +1,773 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#176b45">
-<title>My Farm Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Farm Dashboard | Advanced Management</title>
 <style>
-:root {
- --green:#176b45;--dark:#123c2b;--light:#edf6ef;
- --bg:#f4f7f4;--white:#fff;--text:#24352b;
- --muted:#718078;--border:#dce7df;--red:#c0392b;
-}
+:root{--green:#176b45;--light:#e8f4ec;--ink:#20312a;--muted:#6b7b72;--line:#e1e9e3;--bg:#f4f7f4;--red:#b33b36;--shadow:0 8px 24px rgba(24,55,37,.07)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);
- font-family:Arial,sans-serif}
-header{background:linear-gradient(120deg,#123c2b,#238451);
- color:white;padding:22px 18px}
-header h1{margin:0 0 7px;font-size:26px}
-header p{margin:0;opacity:.85;font-size:14px}
-main{max-width:1150px;margin:auto;padding:18px}
-h2{font-size:21px;margin:10px 0 15px}
-h3{margin:0 0 12px}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.card,.panel{background:white;border-radius:14px;padding:17px;
- border:1px solid var(--border);margin-bottom:14px}
-.card small{color:var(--muted);font-size:13px}
-.card strong{display:block;color:var(--green);font-size:26px;margin-top:9px}
-nav{display:flex;gap:8px;overflow-x:auto;padding:12px 0 16px}
-nav button{white-space:nowrap;border:0;background:#e1eee5;
- color:#244a35;padding:12px 15px;border-radius:9px;
- font-size:14px;cursor:pointer}
-nav button.active{background:var(--green);color:white}
-button{cursor:pointer}
-.panel{padding:19px}
-label{display:block;font-size:13px;font-weight:bold;margin:12px 0 6px}
-input,select,textarea{
- width:100%;padding:12px;border:1px solid #cbd9cf;
- border-radius:8px;font-size:15px;background:white;color:var(--text)
-}
-textarea{min-height:75px;resize:vertical}
-.primary,.secondary,.danger{
- border:0;border-radius:8px;padding:12px 16px;
- font-size:14px;font-weight:bold;margin-top:12px
-}
-.primary{background:var(--green);color:white}
-.secondary{background:#e7efe9;color:var(--dark)}
-.danger{background:#fce9e7;color:var(--red)}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.record{border:1px solid var(--border);border-radius:10px;
- padding:13px;margin:10px 0;overflow-wrap:anywhere}
-.record strong{color:var(--green)}
-.record small{color:var(--muted)}
-.record p{margin:7px 0;font-size:14px}
-.record button{padding:7px 10px;border:0;border-radius:6px;margin:5px 5px 0 0}
-.muted{color:var(--muted);font-size:13px}
-.hidden{display:none!important}
-.search{margin-bottom:12px}
-footer{text-align:center;padding:22px;color:var(--muted);font-size:12px}
-hr{border:0;border-top:1px solid var(--border);margin:17px 0}
-@media(max-width:700px){
- .cards{grid-template-columns:repeat(2,1fr)}
- .grid2{grid-template-columns:1fr}
- main{padding:12px}
- header h1{font-size:22px}
-}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Arial,sans-serif}
+header{background:linear-gradient(120deg,#145b3b,#278453);color:white;padding:22px max(18px,calc((100% - 1200px)/2))}
+header h1{margin:0 0 5px;font-size:28px}
+header p{margin:0;color:#e0f0e5;font-size:14px}
+.wrap{max-width:1200px;margin:auto;padding:18px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.card,.panel{background:white;border:1px solid var(--line);border-radius:15px;padding:17px;box-shadow:var(--shadow)}
+.card small{display:block;color:var(--muted);font-size:13px}
+.card strong{display:block;color:var(--green);font-size:27px;margin-top:7px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 14px}
+.tabs button{white-space:nowrap;border:0;border-radius:10px;background:#e5eee7;color:#315743;padding:11px 14px;font-weight:650;cursor:pointer}
+.tabs button.active{background:var(--green);color:white}
+.panel{margin-bottom:15px}
+.panel h2{font-size:19px;margin:0 0 5px}
+.sub{color:var(--muted);font-size:13px;margin:0 0 15px}
+.grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:15px}
+.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.field label{display:block;font-size:13px;font-weight:650;margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;border:1px solid #ccd9cf;border-radius:9px;padding:11px;background:white;font:inherit;color:var(--ink)}
+.field textarea{min-height:70px}
+.full{grid-column:1/-1}
+.btn{border:0;border-radius:9px;padding:10px 14px;font-weight:650;cursor:pointer;background:var(--green);color:white}
+.btn.secondary{background:#e7eee9;color:#315743}
+.btn.danger{background:#fae9e8;color:var(--red)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.tablewrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:580px}
+th,td{text-align:left;padding:10px 9px;border-bottom:1px solid var(--line);font-size:13px}
+th{color:#5a6c61;background:#f7faf7}
+td .btn{padding:6px 9px;font-size:12px}
+.empty{padding:20px;text-align:center;color:var(--muted)}
+.chartbox{height:250px}
+.chartbox canvas{width:100%;height:100%}
+.metricline{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.metricline strong{color:var(--green)}
+.notice{background:#fff7e7;border:1px solid #f0dfb8;color:#76551c;padding:11px 13px;border-radius:10px;font-size:13px;margin-bottom:14px}
+.success{background:#eaf5ed;border:1px solid #cfe5d5;color:#245e3d;padding:11px 13px;border-radius:10px;font-size:13px;margin-bottom:14px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:12px}
+.toolbar input{max-width:260px;border:1px solid #ccd9cf;border-radius:9px;padding:10px;font:inherit}
+footer{text-align:center;color:var(--muted);padding:25px;font-size:12px}
+@media(max-width:800px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2{grid-template-columns:1fr}}
+@media(max-width:480px){.wrap{padding:12px}.card{padding:13px}.card strong{font-size:23px}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}}
 </style>
 </head>
 <body>
 
 <header>
- <h1>🌱 My Farm Dashboard</h1>
- <p>3-Acre Farm | Odisha, India | Farm Management System</p>
+<h1>🌱 My Farm Dashboard</h1>
+<p>3-Acre Farm · Odisha, India · Advanced Farm Management</p>
 </header>
 
-<main>
-<section id="overview">
- <h2>Farm Overview</h2>
- <div class="cards">
-  <div class="card"><small>🌳 Tree varieties</small><strong id="treeVarieties">3</strong></div>
-  <div class="card"><small>🌱 Total trees</small><strong id="plantTotal">140</strong></div>
-  <div class="card"><small>🥬 Vegetable crops</small><strong id="cropTotal">4</strong></div>
-  <div class="card"><small>💰 Total expenses</small><strong id="expenseTotal">₹0</strong></div>
- </div>
- <div class="panel">
-  <h3>Farm Summary</h3>
-  <div id="treeSummary"></div>
-  <hr>
-  <div id="cropSummary"></div>
- </div>
-</section>
+<main class="wrap">
 
-<nav id="tabs">
- <button class="active" data-tab="overview">🏠 Overview</button>
- <button data-tab="trees">🌳 Trees</button>
- <button data-tab="crops">🥬 Vegetables</button>
- <button data-tab="irrigation">💧 Irrigation</button>
- <button data-tab="borewell">🚰 Borewell</button>
- <button data-tab="fertilizer">🧪 Fertilizer</button>
- <button data-tab="expenses">💰 Expenses</button>
- <button data-tab="backup">📥 Backup</button>
+<div class="cards">
+<div class="card"><small>🌳 Tree varieties</small><strong id="varietyTotal">0</strong></div>
+<div class="card"><small>🌱 Total trees</small><strong id="treeTotal">0</strong></div>
+<div class="card"><small>🥬 Vegetable crops</small><strong id="cropTotal">0</strong></div>
+<div class="card"><small>💰 Total expenses</small><strong id="expenseTotal">₹0</strong></div>
+</div>
+
+<div class="cards">
+<div class="card"><small>🧺 Harvest quantity</small><strong id="harvestTotal">0 kg</strong></div>
+<div class="card"><small>💵 Farm income</small><strong id="incomeTotal">₹0</strong></div>
+<div class="card"><small>📈 Net balance</small><strong id="profitTotal">₹0</strong></div>
+<div class="card"><small>💧 Irrigation records</small><strong id="irrigationTotal">0</strong></div>
+</div>
+
+<div id="notice" class="success">Your records are stored in this browser. Download backups regularly.</div>
+
+<nav class="tabs" id="tabs">
+<button class="active" data-tab="overview">📊 Overview</button>
+<button data-tab="trees">🌳 Trees</button>
+<button data-tab="crops">🥬 Vegetables</button>
+<button data-tab="irrigation">💧 Irrigation</button>
+<button data-tab="borewell">🚰 Borewell</button>
+<button data-tab="fertilizer">🧪 Fertilizer</button>
+<button data-tab="expenses">💰 Expenses</button>
+<button data-tab="harvest">🧺 Harvest</button>
+<button data-tab="income">💵 Income</button>
+<button data-tab="reports">📈 Reports</button>
+<button data-tab="backup">🛡️ Backup</button>
 </nav>
 
-<section id="workspace" class="panel hidden">
- <h2 id="sectionTitle">Farm Records</h2>
- <p class="muted" id="sectionHelp"></p>
-
- <form id="recordForm">
-  <input type="hidden" id="editId">
-  <div id="formFields" class="grid2"></div>
-  <div class="actions">
-   <button class="primary" type="submit" id="saveButton">Save Record</button>
-   <button class="secondary" type="button" id="cancelEdit">Clear Form</button>
-  </div>
- </form>
-
- <hr>
- <h3>Saved Records</h3>
- <input class="search" id="searchRecords" placeholder="Search records...">
- <div id="records"></div>
-</section>
-
-<section id="backup" class="panel hidden">
- <h2>Backup & Data Management</h2>
- <p class="muted">Keep a safe copy of your farm data regularly.</p>
- <button class="primary" id="downloadBackup">⬇ Download JSON Backup</button>
- <hr>
- <h3>Restore Farm Backup</h3>
- <p class="muted">Select a previously downloaded farm JSON backup.</p>
- <input type="file" id="restoreFile" accept=".json,application/json">
- <button class="secondary" id="restoreBackup">Restore Backup</button>
- <hr>
- <h3>Export Records</h3>
- <button class="secondary" id="exportCSV">Download CSV</button>
- <p class="muted">Your records are saved in this browser. Keep backups before changing devices or clearing browser data.</p>
-</section>
-
-<footer>My Farm Dashboard · 3-Acre Farm · Odisha, India</footer>
+<section id="view"></section>
 </main>
 
+<footer>My Farm Dashboard · 3-Acre Farm · Odisha, India</footer>
+
 <script>
-"use strict";
+(() => {
+'use strict';
 
-const STORAGE_KEY = "myFarmDashboardAdvancedV2";
-const OLD_KEY = "myFarmRecordsV1";
+const KEY='myFarmRecordsV1';
+const NEWKEY='myFarmAdvancedV2';
+const $=id=>document.getElementById(id);
+const today=()=>new Date().toISOString().slice(0,10);
+const money=n=>'₹'+(Number(n)||0).toLocaleString('en-IN',{maximumFractionDigits:2});
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 
-const schemas = {
- trees: {
-  title:"🌳 Tree Management",
-  help:"Add and manage your farm trees.",
-  fields:[
-   ["name","Tree name","text"],
-   ["count","Number of plants","number"],
-   ["date","Planting date","date"],
-   ["notes","Growth observations","textarea"]
-  ]
- },
- crops: {
-  title:"🥬 Vegetable Management",
-  help:"Manage crop area, sowing and harvest.",
-  fields:[
-   ["name","Crop name","text"],
-   ["area","Area planted","text"],
-   ["date","Sowing date","date"],
-   ["harvest","Expected harvest","date"],
-   ["notes","Observations","textarea"]
-  ]
- },
- irrigation: {
-  title:"💧 Irrigation Management",
-  help:"Maintain water and pump operation records.",
-  fields:[
-   ["date","Watering date","date"],
-   ["hours","Pump running hours","number"],
-   ["water","Water quantity (litres)","number"],
-   ["notes","Details","textarea"]
-  ]
- },
- borewell: {
-  title:"🚰 Borewell Management",
-  help:"Record water level, depth and maintenance.",
-  fields:[
-   ["date","Record date","date"],
-   ["level","Water level / depth (ft)","number"],
-   ["maintenance","Maintenance details","text"],
-   ["notes","Observations","textarea"]
-  ]
- },
- fertilizer: {
-  title:"🧪 Fertilizer & Pesticide",
-  help:"Record fertilizer, pesticide and application details.",
-  fields:[
-   ["date","Application date","date"],
-   ["product","Fertilizer / pesticide name","text"],
-   ["quantity","Quantity used","text"],
-   ["crop","Crop / tree","text"],
-   ["notes","Details","textarea"]
-  ]
- },
- expenses: {
-  title:"💰 Farm Expenses",
-  help:"Track all farm expenditure in rupees.",
-  fields:[
-   ["date","Expense date","date"],
-   ["type","Expense category","select"],
-   ["amount","Amount (₹)","number"],
-   ["details","Description","textarea"]
-  ]
- }
+const blank=()=>({
+trees:[],crops:[],irrigation:[],borewell:[],
+fertilizer:[],expenses:[],harvest:[],income:[]
+});
+
+let data=blank(),tab='overview',editing=null;
+
+function load(){
+try{
+const newer=JSON.parse(localStorage.getItem(NEWKEY)||'null');
+const older=JSON.parse(localStorage.getItem(KEY)||'null');
+const src=newer||older;
+if(src&&typeof src==='object'){
+Object.keys(data).forEach(k=>{
+if(Array.isArray(src[k]))data[k]=src[k];
+});
+}
+}catch(e){console.warn(e);}
+
+if(!data.trees.length){
+data.trees=[
+{id:uid(),name:'Mango',count:40,date:'',notes:'Existing plantation'},
+{id:uid(),name:'Ber',count:40,date:'',notes:'Existing plantation'},
+{id:uid(),name:'Guava',count:60,date:'',notes:'Existing plantation'}
+];
+}
+
+if(!data.crops.length){
+data.crops=['Tomato','Brinjal','Chilli','Beans'].map(name=>({
+id:uid(),name,area:'',date:'',harvest:'',notes:''
+}));
+}
+
+save();
+}
+
+function save(){
+try{
+localStorage.setItem(NEWKEY,JSON.stringify(data));
+localStorage.setItem(KEY,JSON.stringify(data));
+}catch(e){
+alert('Storage is full. Download a backup and remove some records.');
+throw e;
+}
+}
+
+const configs={
+
+trees:{
+title:'Tree Plantation',
+desc:'Maintain variety-wise plantation count and growth observations.',
+fields:[
+['name','Tree name','text',true],
+['count','Number of plants','number',true],
+['date','Planting date','date'],
+['notes','Growth observations','textarea']
+]
+},
+
+crops:{
+title:'Vegetable Crops',
+desc:'Track crop area, sowing dates and expected harvest.',
+fields:[
+['name','Crop name','text',true],
+['area','Area planted (acre)','number'],
+['date','Sowing date','date'],
+['harvest','Expected harvest date','date'],
+['notes','Observations','textarea']
+]
+},
+
+irrigation:{
+title:'Irrigation Log',
+desc:'Record pump running hours and water usage.',
+fields:[
+['date','Watering date','date',true],
+['hours','Pump running hours','number'],
+['water','Water quantity (litres)','number'],
+['method','Irrigation method','select',['Drip','Sprinkler','Hose pipe','Flood']],
+['notes','Details','textarea']
+]
+},
+
+borewell:{
+title:'Borewell Log',
+desc:'Track water level, depth and maintenance.',
+fields:[
+['date','Record date','date',true],
+['level','Water level / depth (ft)','number'],
+['maintenance','Maintenance details','text'],
+['notes','Observations','textarea']
+]
+},
+
+fertilizer:{
+title:'Fertilizer & Plant Protection',
+desc:'Record fertilizer, pesticide and organic treatment applications.',
+fields:[
+['date','Application date','date',true],
+['product','Product / fertilizer name','text',true],
+['quantity','Quantity used','text'],
+['crop','Crop / tree','text'],
+['notes','Application details','textarea']
+]
+},
+
+expenses:{
+title:'Farm Expenses',
+desc:'Record labour, fertilizer, irrigation, electricity and other costs.',
+fields:[
+['date','Expense date','date',true],
+['type','Expense category','select',['Labour','Fertilizer','Pesticide','Irrigation','Electricity','Seeds and plants','Equipment','Transport','Maintenance','Other']],
+['amount','Amount (₹)','number',true],
+['details','Description','text']
+]
+},
+
+harvest:{
+title:'Harvest Register',
+desc:'Record crop/tree harvest quantity and quality.',
+fields:[
+['date','Harvest date','date',true],
+['crop','Crop / tree name','text',true],
+['quantity','Quantity (kg)','number',true],
+['quality','Grade / quality','select',['A Grade','B Grade','C Grade','Mixed']],
+['notes','Notes','textarea']
+]
+},
+
+income:{
+title:'Farm Income',
+desc:'Record sales and other farm income.',
+fields:[
+['date','Income date','date',true],
+['source','Crop / product sold','text',true],
+['quantity','Quantity sold (kg / units)','number'],
+['rate','Rate per unit (₹)','number'],
+['amount','Total amount received (₹)','number',true],
+['buyer','Buyer / market','text'],
+['notes','Details','textarea']
+]
+}
+
 };
 
-const expenseCategories=[
- "Labour","Fertilizer","Pesticide","Irrigation",
- "Electricity","Seeds and plants","Maintenance",
- "Transport","Equipment","Other"
-];
-
-function uid(){
- return Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+function total(key,field){
+return data[key].reduce((s,r)=>s+(Number(r[field])||0),0);
 }
 
-function defaultData(){
- return {
-  trees:[
-   {id:uid(),name:"Mango",count:40,date:"",notes:"Existing plantation"},
-   {id:uid(),name:"Ber",count:40,date:"",notes:"Existing plantation"},
-   {id:uid(),name:"Guava",count:60,date:"",notes:"Existing plantation"}
-  ],
-  crops:[
-   {id:uid(),name:"Tomato"},
-   {id:uid(),name:"Brinjal"},
-   {id:uid(),name:"Chilli"},
-   {id:uid(),name:"Beans"}
-  ],
-  irrigation:[],
-  borewell:[],
-  fertilizer:[],
-  expenses:[]
- };
+function updateStats(){
+$('varietyTotal').textContent=data.trees.length;
+$('treeTotal').textContent=total('trees','count').toLocaleString('en-IN');
+$('cropTotal').textContent=data.crops.length;
+
+const ex=total('expenses','amount');
+const inc=total('income','amount');
+
+$('expenseTotal').textContent=money(ex);
+$('incomeTotal').textContent=money(inc);
+$('profitTotal').textContent=money(inc-ex);
+$('harvestTotal').textContent=total('harvest','quantity').toLocaleString('en-IN')+' kg';
+$('irrigationTotal').textContent=data.irrigation.length;
 }
 
-function loadData(){
- try{
-  const saved=localStorage.getItem(STORAGE_KEY);
-  if(saved) return normalize(JSON.parse(saved));
-
-  const old=localStorage.getItem(OLD_KEY);
-  if(old){
-   const parsed=JSON.parse(old);
-   if(parsed && !Array.isArray(parsed)){
-    return normalize(parsed);
-   }
-  }
- }catch(error){
-  console.error("Data loading error:",error);
- }
- return defaultData();
+function esc(s){
+return String(s??'').replace(/[&<>"']/g,c=>({
+'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[c]));
 }
 
-function normalize(value){
- const fresh=defaultData();
- const result={};
- for(const key of Object.keys(schemas)){
-  result[key]=Array.isArray(value[key])?value[key]:fresh[key];
-  result[key]=result[key].map(item=>({
-   ...item,id:item.id||uid()
-  }));
- }
- return result;
+function fieldHtml(f,v=''){
+const [key,label,type,required,opts]=f;
+let el='';
+
+if(type==='textarea'){
+el=`<textarea id="f_${key}" ${required?'required':''}>${esc(v)}</textarea>`;
+}
+else if(type==='select'){
+el=`<select id="f_${key}" ${required?'required':''}>
+<option value="">Select</option>
+${opts.map(o=>`<option value="${esc(o)}" ${v===o?'selected':''}>${esc(o)}</option>`).join('')}
+</select>`;
+}
+else{
+el=`<input id="f_${key}" type="${type}" value="${esc(v)}"
+${required?'required':''} ${type==='number'?'min="0" step="any"':''}>`;
 }
 
-let data=loadData();
-let currentTab="overview";
-
-function saveData(){
- try{
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
-  return true;
- }catch(error){
-  alert("Storage is full. Download a backup and remove some data.");
-  return false;
- }
+return `<div class="field ${type==='textarea'?'full':''}">
+<label for="f_${key}">${label}${required?' *':''}</label>${el}
+</div>`;
 }
 
-function escapeHTML(value){
- return String(value??"").replace(/[&<>"']/g,char=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",
-  '"':"&quot;","'":"&#39;"
- })[char]);
+function formPanel(key){
+const c=configs[key];
+const rec=editing&&editing.key===key?data[key].find(x=>x.id===editing.id):null;
+
+return `<div class="panel">
+<h2>${rec?'Edit':'Add'} ${c.title}</h2>
+<p class="sub">${c.desc}</p>
+<form id="entryForm" class="formgrid">
+${c.fields.map(f=>fieldHtml(f,rec?.[f[0]]??(f[0]==='date'?today():''))).join('')}
+<div class="actions full">
+<button class="btn" type="submit">${rec?'Update record':'Save record'}</button>
+${rec?'<button class="btn secondary" type="button" id="cancelEdit">Cancel</button>':''}
+</div>
+</form>
+</div>`;
 }
 
-function money(value){
- return "₹"+Number(value||0).toLocaleString("en-IN");
+function recordsTable(key){
+const c=configs[key],rows=data[key];
+const cols=c.fields.filter(f=>f[0]!=='notes').slice(0,5);
+
+return `<div class="panel">
+<div class="toolbar">
+<div><h2>Saved ${c.title} Records</h2><p class="sub">${rows.length} record(s)</p></div>
+<input id="searchRows" placeholder="Search records…">
+</div>
+<div class="tablewrap">
+<table>
+<thead><tr>${cols.map(f=>`<th>${f[1]}</th>`).join('')}<th>Action</th></tr></thead>
+<tbody id="rowsBody">
+${rows.slice().reverse().map(r=>rowHtml(r,cols)).join('')||'<tr><td colspan="8">No records added yet.</td></tr>'}
+</tbody>
+</table>
+</div>
+</div>`;
 }
 
-function updateOverview(){
- const totalTrees=data.trees.reduce((sum,item)=>sum+Math.max(0,Number(item.count)||0),0);
- const varieties=new Set(data.trees.map(x=>x.name.toLowerCase())).size;
- const expenses=data.expenses.reduce((sum,item)=>sum+Math.max(0,Number(item.amount)||0),0);
-
- document.getElementById("treeVarieties").textContent=varieties;
- document.getElementById("plantTotal").textContent=totalTrees;
- document.getElementById("cropTotal").textContent=data.crops.length;
- document.getElementById("expenseTotal").textContent=money(expenses);
-
- document.getElementById("treeSummary").innerHTML=
-  "<strong>Tree Plantation</strong><br>"+
-  (data.trees.length?data.trees.map(t=>
-   escapeHTML(t.name)+" — "+Number(t.count||0)+" plants"
-  ).join("<br>"):"No tree records.");
-
- document.getElementById("cropSummary").innerHTML=
-  "<strong>Vegetable Crops</strong><br>"+
-  (data.crops.length?data.crops.map(c=>
-   escapeHTML(c.name)
-  ).join(" · "):"No crop records.");
+function rowHtml(r,cols){
+return `<tr>
+${cols.map(f=>`<td>${esc(r[f[0]]??'—')}</td>`).join('')}
+<td>
+<button class="btn secondary" data-edit="${esc(r.id)}">Edit</button>
+<button class="btn danger" data-delete="${esc(r.id)}">Delete</button>
+</td>
+</tr>`;
 }
 
-function openTab(tab){
- if(tab!=="overview" && tab!=="backup" && !schemas[tab]) return;
+function bindRecordActions(key){
+const search=$('searchRows');
 
- currentTab=tab;
+if(search){
+search.addEventListener('input',()=>{
+const q=search.value.toLowerCase();
+$('rowsBody').innerHTML=data[key].slice().reverse()
+.filter(r=>JSON.stringify(r).toLowerCase().includes(q))
+.map(r=>rowHtml(r,configs[key].fields.filter(f=>f[0]!=='notes').slice(0,5)))
+.join('')||'<tr><td colspan="8">No matching records</td></tr>';
 
- document.querySelectorAll("#tabs button").forEach(button=>{
-  button.classList.toggle("active",button.dataset.tab===tab);
- });
-
- document.getElementById("overview").classList.toggle("hidden",tab!=="overview");
- document.getElementById("workspace").classList.toggle("hidden",!schemas[tab]);
- document.getElementById("backup").classList.toggle("hidden",tab!=="backup");
-
- if(schemas[tab]){
-  document.getElementById("sectionTitle").textContent=schemas[tab].title;
-  document.getElementById("sectionHelp").textContent=schemas[tab].help;
-  buildForm();
-  renderRecords();
- }
- updateOverview();
+bindRowButtons(key);
+});
 }
 
-function buildForm(){
- const schema=schemas[currentTab];
- const container=document.getElementById("formFields");
- container.innerHTML="";
-
- schema.fields.forEach(([key,label,type])=>{
-  const wrapper=document.createElement("div");
-  const id="field_"+key;
-  const title=document.createElement("label");
-  title.htmlFor=id;
-  title.textContent=label;
-
-  let input;
-  if(type==="textarea"){
-   input=document.createElement("textarea");
-  }else if(type==="select"){
-   input=document.createElement("select");
-   expenseCategories.forEach(category=>{
-    const option=document.createElement("option");
-    option.value=category;
-    option.textContent=category;
-    input.appendChild(option);
-   });
-  }else{
-   input=document.createElement("input");
-   input.type=type;
-   if(type==="number") input.min="0";
-  }
-
-  input.id=id;
-  input.name=key;
-  if(key==="name"||key==="product"||key==="date") input.required=true;
-  wrapper.append(title,input);
-  container.appendChild(wrapper);
- });
+bindRowButtons(key);
 }
 
-function clearForm(){
- document.getElementById("recordForm").reset();
- document.getElementById("editId").value="";
- document.getElementById("saveButton").textContent="Save Record";
- document.getElementById("cancelEdit").textContent="Clear Form";
-}
-
-function renderRecords(){
- const box=document.getElementById("records");
- const search=document.getElementById("searchRecords").value.toLowerCase();
- const list=data[currentTab].filter(item=>
-  Object.values(item).some(value=>
-   String(value??"").toLowerCase().includes(search)
-  )
- );
-
- box.innerHTML="";
- if(!list.length){
-  box.innerHTML='<p class="muted">No records found. Add your first record above.</p>';
-  return;
- }
-
- [...list].reverse().forEach(item=>{
-  const card=document.createElement("div");
-  card.className="record";
-
-  const schema=schemas[currentTab];
-  const heading=item.name||item.product||item.type||schema.title;
-
-  let content="";
-  schema.fields.forEach(([key,label])=>{
-   if(item[key]!==undefined && item[key]!==""){
-    content+='<p><small>'+escapeHTML(label)+':</small> <strong>'+
-     escapeHTML(key==="amount"?money(item[key]):item[key])+
-     '</strong></p>';
-   }
-  });
-
-  const edit=document.createElement("button");
-  edit.className="secondary";
-  edit.textContent="✏ Edit";
-  edit.addEventListener("click",()=>editRecord(item.id));
-
-  const del=document.createElement("button");
-  del.className="danger";
-  del.textContent="🗑 Delete";
-  del.addEventListener("click",()=>deleteRecord(item.id));
-
-  card.innerHTML="<strong>"+escapeHTML(heading)+"</strong>"+content;
-  const actions=document.createElement("div");
-  actions.append(edit,del);
-  card.appendChild(actions);
-  box.appendChild(card);
- });
-}
-
-function editRecord(id){
- const item=data[currentTab].find(x=>x.id===id);
- if(!item) return;
-
- document.getElementById("editId").value=id;
- schemas[currentTab].fields.forEach(([key])=>{
-  const field=document.getElementById("field_"+key);
-  if(field) field.value=item[key]??"";
- });
- document.getElementById("saveButton").textContent="Update Record";
- document.getElementById("cancelEdit").textContent="Cancel Edit";
- document.getElementById("recordForm").scrollIntoView({behavior:"smooth"});
-}
-
-function deleteRecord(id){
- if(!confirm("Are you sure you want to delete this record?")) return;
- data[currentTab]=data[currentTab].filter(x=>x.id!==id);
- if(saveData()){
-  renderRecords();
-  updateOverview();
-  clearForm();
- }
-}
-
-document.getElementById("tabs").addEventListener("click",event=>{
- const button=event.target.closest("button[data-tab]");
- if(button) openTab(button.dataset.tab);
+function bindRowButtons(key){
+document.querySelectorAll('[data-edit]').forEach(b=>{
+b.onclick=()=>{
+editing={key,id:b.dataset.edit};
+render();
+};
 });
 
-document.getElementById("recordForm").addEventListener("submit",event=>{
- event.preventDefault();
+document.querySelectorAll('[data-delete]').forEach(b=>{
+b.onclick=()=>{
+if(confirm('Delete this record?')){
+data[key]=data[key].filter(r=>r.id!==b.dataset.delete);
+save();
+editing=null;
+render();
+showMsg('Record deleted.');
+}
+};
+});
+}
 
- const schema=schemas[currentTab];
- const id=document.getElementById("editId").value;
- const record={id:id||uid()};
+function bindForm(key){
+const form=$('entryForm');
+if(!form)return;
 
- for(const [key,label] of schema.fields){
-  const field=document.getElementById("field_"+key);
-  record[key]=field.value.trim();
- }
+form.onsubmit=e=>{
+e.preventDefault();
 
- if(currentTab==="trees" && Number(record.count)<0){
-  alert("Plant count cannot be negative.");
-  return;
- }
- if(currentTab==="expenses" && (!Number.isFinite(Number(record.amount))||Number(record.amount)<0)){
-  alert("Enter a valid expense amount.");
-  return;
- }
+const obj={};
 
- if(id){
-  const index=data[currentTab].findIndex(x=>x.id===id);
-  if(index>=0) data[currentTab][index]=record;
- }else{
-  data[currentTab].push(record);
- }
+for(const f of configs[key].fields){
+const el=$('f_'+f[0]);
+obj[f[0]]=el?el.value.trim():'';
 
- if(saveData()){
-  clearForm();
-  renderRecords();
-  updateOverview();
-  alert("Record saved successfully!");
- }
+if(f[2]==='number'&&obj[f[0]]!==''&&Number(obj[f[0]])<0){
+return alert('Please enter a valid positive number.');
+}
+}
+
+if(key==='income'&&!obj.amount&&obj.quantity&&obj.rate){
+obj.amount=String(Number(obj.quantity)*Number(obj.rate));
+}
+
+if(key==='expenses'||key==='income'){
+if(!Number.isFinite(Number(obj.amount))||Number(obj.amount)<=0){
+return alert('Please enter a valid amount.');
+}
+}
+
+const existing=editing&&editing.key===key
+?data[key].find(r=>r.id===editing.id):null;
+
+if(existing)Object.assign(existing,obj);
+else data[key].push({id:uid(),...obj});
+
+save();
+editing=null;
+render();
+showMsg('Record saved successfully.');
+};
+
+const cancel=$('cancelEdit');
+if(cancel)cancel.onclick=()=>{
+editing=null;
+render();
+};
+}
+
+function showMsg(t){
+const n=$('notice');
+n.textContent=t;
+n.className='success';
+}
+
+function overview(){
+const ex=total('expenses','amount');
+const inc=total('income','amount');
+
+return `<div class="grid2">
+<div class="panel">
+<h2>Farm Summary</h2>
+<p class="sub">Current plantation and crop position</p>
+<div class="metricline"><span>Tree varieties</span><strong>${data.trees.length}</strong></div>
+<div class="metricline"><span>Total trees</span><strong>${total('trees','count')}</strong></div>
+<div class="metricline"><span>Vegetable crops</span><strong>${data.crops.length}</strong></div>
+<div class="metricline"><span>Harvest quantity</span><strong>${total('harvest','quantity')} kg</strong></div>
+<div class="metricline"><span>Total expenses</span><strong>${money(ex)}</strong></div>
+<div class="metricline"><span>Total income</span><strong>${money(inc)}</strong></div>
+<div class="metricline"><span>Net balance</span><strong>${money(inc-ex)}</strong></div>
+</div>
+
+<div class="panel">
+<h2>Plantation Breakdown</h2>
+<p class="sub">Tree count by variety</p>
+${data.trees.length?data.trees.map(t=>`
+<div class="metricline">
+<span>${esc(t.name)}</span>
+<strong>${Number(t.count)||0} plants</strong>
+</div>`).join(''):'<div class="empty">No trees added</div>'}
+</div>
+</div>
+
+<div class="panel">
+<h2>Recent Activity</h2>
+<p class="sub">Latest farm records</p>
+${recentActivity()}
+</div>`;
+}
+
+function recentActivity(){
+const all=[];
+
+Object.entries(configs).forEach(([k,c])=>{
+data[k].forEach(r=>all.push({
+title:c.title,
+date:r.date||'',
+label:r.name||r.crop||r.source||r.product||r.type||c.title,
+amount:r.amount
+}));
 });
 
-document.getElementById("cancelEdit").addEventListener("click",clearForm);
-document.getElementById("searchRecords").addEventListener("input",renderRecords);
+all.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
 
-document.getElementById("downloadBackup").addEventListener("click",()=>{
- const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
- const url=URL.createObjectURL(blob);
- const a=document.createElement("a");
- a.href=url;
- a.download="my-farm-backup.json";
- a.click();
- setTimeout(()=>URL.revokeObjectURL(url),1000);
+if(!all.length)return '<div class="empty">No farm activity recorded yet.</div>';
+
+return `<div class="tablewrap">
+<table>
+<thead><tr><th>Date</th><th>Type</th><th>Details</th><th>Amount</th></tr></thead>
+<tbody>
+${all.slice(0,8).map(x=>`
+<tr>
+<td>${esc(x.date||'—')}</td>
+<td>${esc(x.title)}</td>
+<td>${esc(x.label)}</td>
+<td>${x.amount?money(x.amount):'—'}</td>
+</tr>`).join('')}
+</tbody>
+</table>
+</div>`;
+}
+
+function reports(){
+const ex=total('expenses','amount');
+const inc=total('income','amount');
+const har=total('harvest','quantity');
+
+return `<div class="grid2">
+<div class="panel">
+<h2>Financial Summary</h2>
+<p class="sub">Based on saved income and expense records</p>
+<div class="metricline"><span>Total income</span><strong>${money(inc)}</strong></div>
+<div class="metricline"><span>Total expenses</span><strong>${money(ex)}</strong></div>
+<div class="metricline"><span>Net profit / loss</span><strong>${money(inc-ex)}</strong></div>
+<div class="metricline"><span>Profit margin</span><strong>${inc?((inc-ex)/inc*100).toFixed(1)+'%':'—'}</strong></div>
+</div>
+
+<div class="panel">
+<h2>Production Summary</h2>
+<div class="metricline"><span>Total trees</span><strong>${total('trees','count')}</strong></div>
+<div class="metricline"><span>Crop varieties</span><strong>${data.crops.length}</strong></div>
+<div class="metricline"><span>Harvest quantity</span><strong>${har} kg</strong></div>
+<div class="metricline"><span>Irrigation pump hours</span><strong>${total('irrigation','hours')} hrs</strong></div>
+</div>
+</div>
+
+<div class="panel">
+<h2>Monthly Income vs Expenses</h2>
+<p class="sub">Monthly totals from recorded transactions</p>
+<div class="chartbox"><canvas id="financeChart" width="900" height="250"></canvas></div>
+</div>
+
+<div class="panel">
+<h2>Expense Categories</h2>
+<div class="chartbox"><canvas id="expenseChart" width="900" height="250"></canvas></div>
+</div>`;
+}
+
+function drawBars(canvasId,labels,series){
+const c=$(canvasId);
+if(!c)return;
+
+const ctx=c.getContext('2d');
+const w=c.width,h=c.height;
+ctx.clearRect(0,0,w,h);
+
+const pad={l:55,r:20,t:18,b:42};
+const pw=w-pad.l-pad.r,ph=h-pad.t-pad.b;
+let max=Math.max(1,...series.flatMap(s=>s.values));
+
+ctx.strokeStyle='#dfe8e1';
+ctx.fillStyle='#64766b';
+ctx.font='13px Arial';
+
+for(let i=0;i<=4;i++){
+let y=pad.t+ph*i/4;
+ctx.beginPath();
+ctx.moveTo(pad.l,y);
+ctx.lineTo(w-pad.r,y);
+ctx.stroke();
+ctx.fillText(Math.round(max*(4-i)/4).toLocaleString('en-IN'),5,y+4);
+}
+
+const group=pw/Math.max(1,labels.length);
+const bw=Math.min(28,group/(series.length+1));
+
+labels.forEach((lab,i)=>{
+series.forEach((s,j)=>{
+let v=s.values[i]||0;
+let bh=v/max*ph;
+let x=pad.l+i*group+group/2+(j-(series.length-1)/2)*(bw+4)-bw/2;
+let y=pad.t+ph-bh;
+ctx.fillStyle=s.color;
+ctx.fillRect(x,y,bw,bh);
 });
 
-document.getElementById("restoreBackup").addEventListener("click",async()=>{
- const file=document.getElementById("restoreFile").files[0];
- if(!file) return alert("Please select a JSON backup file.");
-
- try{
-  const restored=JSON.parse(await file.text());
-  if(!restored || typeof restored!=="object" ||
-    !["trees","crops","irrigation","borewell","fertilizer","expenses"]
-    .every(key=>Array.isArray(restored[key]))){
-   throw new Error("Invalid backup structure");
-  }
-  if(!confirm("Restore this backup? Current farm data will be replaced.")) return;
-  const previous=data;
-  data=normalize(restored);
-  if(!saveData()){
-   data=previous;
-   return;
-  }
-  updateOverview();
-  openTab("overview");
-  alert("Farm backup restored successfully!");
- }catch(error){
-  alert("Unable to restore. Please select a valid farm backup JSON file.");
- }
+ctx.fillStyle='#52645a';
+ctx.textAlign='center';
+ctx.fillText(lab,pad.l+i*group+group/2,h-13);
 });
 
-document.getElementById("exportCSV").addEventListener("click",()=>{
- let rows=[["Category","Date","Name","Count","Amount","Details"]];
- Object.keys(schemas).forEach(category=>{
-  data[category].forEach(item=>{
-   rows.push([
-    category,item.date||"",item.name||item.product||item.type||"",
-    item.count||"",item.amount||"",item.notes||item.details||""
-   ]);
-  });
- });
- const csv=rows.map(row=>row.map(value=>
-  '"'+String(value).replace(/"/g,'""')+'"'
- ).join(",")).join("\r\n");
+ctx.textAlign='left';
+let lx=pad.l;
 
- const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
- const url=URL.createObjectURL(blob);
- const a=document.createElement("a");
- a.href=url;
- a.download="my-farm-records.csv";
- a.click();
- setTimeout(()=>URL.revokeObjectURL(url),1000);
+series.forEach(s=>{
+ctx.fillStyle=s.color;
+ctx.fillRect(lx,3,12,12);
+ctx.fillStyle='#43564a';
+ctx.fillText(s.name,lx+17,14);
+lx+=115;
+});
+}
+
+function drawReports(){
+const months=Array.from({length:6},(_,i)=>{
+const d=new Date();
+d.setMonth(d.getMonth()-(5-i));
+return d.toISOString().slice(0,7);
 });
 
-saveData();
-updateOverview();
-openTab("overview");
+const sum=(arr,m)=>arr.filter(r=>(r.date||'').slice(0,7)===m)
+.reduce((s,r)=>s+(Number(r.amount)||0),0);
+
+drawBars('financeChart',months.map(m=>m.slice(5)),[
+{name:'Income',color:'#238453',values:months.map(m=>sum(data.income,m))},
+{name:'Expenses',color:'#d58b35',values:months.map(m=>sum(data.expenses,m))}
+]);
+
+const cats=[...new Set(data.expenses.map(x=>x.type||'Other'))];
+
+drawBars('expenseChart',cats.length?cats:['No data'],[
+{name:'Expenses',color:'#238453',
+values:cats.length?cats.map(c=>data.expenses.filter(x=>x.type===c)
+.reduce((s,r)=>s+(Number(r.amount)||0),0)):[0]}
+]);
+}
+
+function backup(){
+return `<div class="grid2">
+<div class="panel">
+<h2>Backup Your Farm Data</h2>
+<p class="sub">Download a JSON copy of all records.</p>
+<button class="btn" id="downloadBackup">⬇ Download Farm Backup</button>
+<div class="field" style="margin-top:16px">
+<label for="restoreFile">Restore from backup file</label>
+<input id="restoreFile" type="file" accept="application/json">
+</div>
+<div class="actions">
+<button class="btn secondary" id="restoreBackup">Restore Backup</button>
+</div>
+</div>
+
+<div class="panel">
+<h2>Export Records</h2>
+<p class="sub">Download individual registers as CSV files for Excel.</p>
+${Object.keys(configs).map(k=>`
+<div class="metricline">
+<span>${configs[k].title}</span>
+<button class="btn secondary" data-csv="${k}">Export CSV</button>
+</div>`).join('')}
+</div>
+</div>
+
+<div class="notice">
+Important: Browser storage is local to this device and browser. Clearing website data may erase records. Download backups regularly.
+</div>`;
+}
+
+function download(name,content,type){
+const blob=new Blob([content],{type});
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');
+a.href=url;
+a.download=name;
+document.body.appendChild(a);
+a.click();
+a.remove();
+setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function exportCSV(key){
+const rows=data[key];
+if(!rows.length)return alert('No records to export.');
+
+const keys=[...new Set(rows.flatMap(Object.keys))];
+const csv=[
+keys.join(','),
+...rows.map(r=>keys.map(k=>'"'+String(r[k]??'').replace(/"/g,'""')+'"').join(','))
+].join('\n');
+
+download(key+'-records.csv','\ufeff'+csv,'text/csv;charset=utf-8;');
+}
+
+function bindBackup(){
+const d=$('downloadBackup');
+
+if(d)d.onclick=()=>download(
+'my-farm-backup.json',
+JSON.stringify(data,null,2),
+'application/json'
+);
+
+document.querySelectorAll('[data-csv]').forEach(b=>{
+b.onclick=()=>exportCSV(b.dataset.csv);
+});
+
+const rb=$('restoreBackup');
+
+if(rb)rb.onclick=()=>{
+const f=$('restoreFile').files[0];
+if(!f)return alert('Please select a backup JSON file first.');
+
+const reader=new FileReader();
+
+reader.onload=()=>{
+try{
+const obj=JSON.parse(reader.result);
+if(!obj||typeof obj!=='object')throw Error();
+
+Object.keys(data).forEach(k=>{
+if(Array.isArray(obj[k]))data[k]=obj[k];
+});
+
+save();
+editing=null;
+render();
+showMsg('Backup restored successfully.');
+}catch(e){
+alert('Invalid backup file. No data was changed.');
+}
+};
+
+reader.readAsText(f);
+};
+}
+
+function render(){
+updateStats();
+
+document.querySelectorAll('#tabs button').forEach(b=>{
+b.classList.toggle('active',b.dataset.tab===tab);
+});
+
+const v=$('view');
+
+if(tab==='overview'){
+v.innerHTML=overview();
+return;
+}
+
+if(tab==='reports'){
+v.innerHTML=reports();
+drawReports();
+return;
+}
+
+if(tab==='backup'){
+v.innerHTML=backup();
+bindBackup();
+return;
+}
+
+if(configs[tab]){
+v.innerHTML=formPanel(tab)+recordsTable(tab);
+bindForm(tab);
+bindRecordActions(tab);
+return;
+}
+
+v.innerHTML='<div class="panel">Section unavailable.</div>';
+}
+
+$('tabs').addEventListener('click',e=>{
+const b=e.target.closest('button[data-tab]');
+if(!b)return;
+
+tab=b.dataset.tab;
+editing=null;
+render();
+});
+
+load();
+render();
+
+})();
 </script>
 </body>
 </html>

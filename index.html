@@ -5,15 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>My Farm Dashboard</title>
 <style>
-body{font-family:Arial;background:#f0f5ed;margin:0;color:#26382b}
-header{background:#245c35;color:white;padding:25px}
-main{padding:18px;max-width:850px;margin:auto}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:white;padding:18px;border-radius:12px;margin-bottom:12px}
-.number{font-size:25px;color:#26723c;font-weight:bold}
-input{width:95%;padding:12px;margin:7px 0;border:1px solid #ccc;border-radius:7px}
-button{background:#26723c;color:white;padding:12px;border:0;border-radius:7px}
-@media(max-width:400px){.grid{grid-template-columns:1fr}}
+*{box-sizing:border-box}
+body{margin:0;background:#f1f5ef;color:#263b2c;font-family:Arial,sans-serif}
+header{background:#285536;color:white;padding:28px 18px}
+header h1{margin:0 0 8px;font-size:28px}
+header p{margin:0}
+main{max-width:950px;margin:auto;padding:18px}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card,.panel{background:white;padding:18px;border-radius:15px;margin-bottom:14px}
+.card small{color:#607466}
+.card strong{display:block;font-size:25px;color:#367444;margin-top:8px}
+nav{display:flex;gap:8px;overflow-x:auto;padding:12px 0}
+nav button{white-space:nowrap;border:0;border-radius:9px;padding:12px;background:#dce9dc;color:#23432d}
+nav button.active{background:#285536;color:white}
+h2{margin-top:8px}
+label{display:block;font-size:14px;font-weight:bold;margin:12px 0 5px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5ca;border-radius:8px;font-size:16px;background:white}
+textarea{min-height:65px}
+.primary{background:#28623b;color:white;border:0;padding:13px 18px;border-radius:9px;font-size:16px;margin-top:14px}
+.secondary{background:#e3eee3;color:#245232;border:0;padding:11px;border-radius:8px}
+.record{border:1px solid #e0e8df;padding:13px;border-radius:10px;margin:10px 0;overflow-wrap:anywhere}
+.record strong{color:#285536}
+.record button{float:right;border:0;background:#fce8e6;color:#9b3025;padding:7px;border-radius:7px}
+.muted{color:#68766b;font-size:13px}
+footer{text-align:center;padding:25px;color:#647365;font-size:13px}
+@media(min-width:650px){.cards{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
@@ -21,54 +37,232 @@ button{background:#26723c;color:white;padding:12px;border:0;border-radius:7px}
 <h1>🌱 My Farm Dashboard</h1>
 <p>3-Acre Farm | Odisha, India</p>
 </header>
+
 <main>
+<section id="overview">
 <h2>Farm Overview</h2>
-<div class="grid">
-<div class="card">🌳 Farm Area<div class="number">3 Acres</div></div>
-<div class="card">🥭 Mango<div class="number">40 Plants</div></div>
-<div class="card">🍈 Ber<div class="number">40 Plants</div></div>
-<div class="card">🍐 Guava<div class="number">60 Plants</div></div>
-<div class="card">💧 Water Source<div class="number">Borewell</div></div>
-<div class="card">⚡ Pump<div class="number">3 HP</div></div>
+<div class="cards">
+<div class="card"><small>🌳 Tree varieties</small><strong id="treeTotal">3</strong></div>
+<div class="card"><small>🌱 Total trees</small><strong id="plantTotal">140</strong></div>
+<div class="card"><small>🥬 Vegetable crops</small><strong id="cropTotal">4</strong></div>
+<div class="card"><small>💰 Total expenses</small><strong id="expenseTotal">₹0</strong></div>
 </div>
+</section>
 
-<h2>Farm Activities</h2>
-<div class="card">
-<ul>
-<li>Tree Plantation</li>
-<li>Vegetable Garden</li>
-<li>Drip Irrigation</li>
-<li>Fertilizer Management</li>
-<li>Garden Development</li>
-</ul>
-</div>
+<nav id="tabs">
+<button class="active" data-tab="overview">Overview</button>
+<button data-tab="trees">🌳 Trees</button>
+<button data-tab="crops">🥬 Vegetables</button>
+<button data-tab="irrigation">💧 Irrigation</button>
+<button data-tab="borewell">🚰 Borewell</button>
+<button data-tab="fertilizer">🧪 Fertilizer</button>
+<button data-tab="expenses">💰 Expenses</button>
+</nav>
 
-<h2>💰 Expense Tracker</h2>
-<div class="card">
-<input id="name" placeholder="Expense name">
-<input id="amount" type="number" placeholder="Amount in ₹">
-<button onclick="addExpense()">Add Expense</button>
-<h3>Total: ₹<span id="total">0</span></h3>
-<ul id="list"></ul>
-</div>
+<section class="panel" id="workspace">
+<h2 id="sectionTitle">Farm Records</h2>
+<p class="muted" id="sectionHelp">Manage your farm records here.</p>
+<form id="recordForm"></form>
+</section>
+
+<section class="panel">
+<h2>Saved Records</h2>
+<div id="records"></div>
+</section>
+
+<section class="panel">
+<h2>Backup Your Data</h2>
+<p class="muted">Download a copy of your records regularly. Keep it somewhere safe.</p>
+<button class="primary" id="backup">Download Farm Backup</button>
+</section>
 </main>
+
+<footer>My Farm Dashboard · Farm Management · Odisha</footer>
+
 <script>
-let expenses=[];
-function addExpense(){
-let n=document.getElementById("name").value.trim();
-let a=Number(document.getElementById("amount").value);
-if(!n||a<=0){alert("Enter valid details");return}
-expenses.push({n,a});
-document.getElementById("total").textContent=
-expenses.reduce((s,e)=>s+e.a,0);
-let li=document.createElement("li");
-li.textContent=n+" - ₹"+a;
-document.getElementById("list").appendChild(li);
-document.getElementById("name").value="";
-document.getElementById("amount").value="";
+const KEY="myFarmRecordsV1";
+
+const fields={
+trees:[
+["name","Tree name","text"],["count","Number of plants","number"],
+["date","Planting date","date"],["notes","Growth observations","textarea"]
+],
+crops:[
+["name","Crop name","text"],["area","Area planted","text"],
+["date","Sowing date","date"],["harvest","Expected harvest","date"],
+["notes","Observations","textarea"]
+],
+irrigation:[
+["date","Watering date","date"],["hours","Pump running hours","number"],
+["water","Water quantity (litres)","number"],["notes","Details","textarea"]
+],
+borewell:[
+["date","Record date","date"],["level","Water level / depth (ft)","number"],
+["maintenance","Maintenance details","text"],["notes","Observations","textarea"]
+],
+fertilizer:[
+["date","Application date","date"],["product","Fertilizer / pesticide name","text"],
+["quantity","Quantity used","text"],["crop","Crop / tree","text"],
+["notes","Details","textarea"]
+],
+expenses:[
+["date","Date","date"],["type","Expense category","select"],
+["amount","Amount (₹)","number"],["details","Description","text"]
+]
+};
+
+const categories=["Labour","Fertilizer","Pesticide","Irrigation","Electricity","Seeds and plants","Maintenance","Other"];
+
+let data;
+try{
+ data=JSON.parse(localStorage.getItem(KEY));
+}catch(e){data=null;}
+
+if(!data || Array.isArray(data)){
+ data={trees:[
+ {id:1,name:"Mango",count:40,notes:"Existing plantation"},
+ {id:2,name:"Ber",count:40,notes:"Existing plantation"},
+ {id:3,name:"Guava",count:60,notes:"Existing plantation"}
+ ],crops:[
+ {id:4,name:"Tomato"},
+ {id:5,name:"Brinjal"},
+ {id:6,name:"Chilli"},
+ {id:7,name:"Beans"}
+ ],irrigation:[],borewell:[],fertilizer:[],expenses:[]};
 }
+
+let current="overview";
+
+function save(){
+ localStorage.setItem(KEY,JSON.stringify(data));
+}
+
+function showOverview(){
+ document.getElementById("treeTotal").textContent=data.trees.length;
+ document.getElementById("plantTotal").textContent=data.trees.reduce((s,r)=>s+(Number(r.count)||0),0);
+ document.getElementById("cropTotal").textContent=data.crops.length;
+ const total=data.expenses.reduce((s,r)=>s+(Number(r.amount)||0),0);
+ document.getElementById("expenseTotal").textContent="₹"+total.toLocaleString("en-IN");
+}
+
+function openTab(tab){
+ current=tab;
+ document.querySelectorAll("nav button").forEach(b=>{
+ b.classList.toggle("active",b.dataset.tab===tab);
+ });
+ document.getElementById("workspace").style.display=tab==="overview"?"none":"block";
+ if(tab==="overview"){
+ document.getElementById("records").innerHTML=
+ "<p>Welcome to your farm management system. Select a section above to add or view records.</p>";
+ }else{
+ document.getElementById("sectionTitle").textContent=
+ ({trees:"Tree Plantation",crops:"Vegetable Garden",irrigation:"Irrigation Records",borewell:"Borewell Records",fertilizer:"Fertilizer & Pesticides",expenses:"Expenses & Income"})[tab];
+ buildForm();
+ renderRecords();
+ }
+ showOverview();
+}
+
+function buildForm(){
+ const form=document.getElementById("recordForm");
+ form.innerHTML="";
+ fields[current].forEach(([key,label,type])=>{
+ const wrap=document.createElement("div");
+ const lab=document.createElement("label");
+ lab.textContent=label;
+ let el;
+ if(type==="textarea"){
+ el=document.createElement("textarea");
+ }else if(type==="select"){
+ el=document.createElement("select");
+ ["","Income",...categories].forEach(v=>{
+ const op=document.createElement("option");
+ op.value=v;op.textContent=v||"Select category";
+ el.appendChild(op);
+ });
+ }else{
+ el=document.createElement("input");
+ el.type=type;
+ if(type==="number")el.min="0";
+ }
+ el.name=key;
+ el.required=["name","date","amount","product"].includes(key);
+ wrap.append(lab,el);
+ form.appendChild(wrap);
+ });
+ const submit=document.createElement("button");
+ submit.type="submit";
+ submit.className="primary";
+ submit.textContent="＋ Save Record";
+ form.appendChild(submit);
+}
+
+function renderRecords(){
+ const box=document.getElementById("records");
+ box.innerHTML="";
+ const list=data[current]||[];
+ if(!list.length){
+ box.textContent="No records added yet.";
+ return;
+ }
+ [...list].reverse().forEach(item=>{
+ const div=document.createElement("div");
+ div.className="record";
+ const del=document.createElement("button");
+ del.textContent="Delete";
+ del.onclick=()=>{
+ if(confirm("Delete this record?")){
+ data[current]=data[current].filter(x=>x.id!==item.id);
+ save();renderRecords();showOverview();
+ }
+ };
+ div.appendChild(del);
+ Object.entries(item).forEach(([key,value])=>{
+ if(key==="id"||value===""||value===undefined)return;
+ const line=document.createElement("div");
+ line.textContent=key.charAt(0).toUpperCase()+key.slice(1)+": "+value;
+ div.appendChild(line);
+ });
+ box.appendChild(div);
+ });
+}
+
+document.getElementById("tabs").addEventListener("click",e=>{
+ const tab=e.target.dataset.tab;
+ if(tab)openTab(tab);
+});
+
+document.getElementById("recordForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const record=Object.fromEntries(new FormData(e.target).entries());
+ if(current==="trees"||current==="expenses"){
+ if(Number(record.count||record.amount)<0)return alert("Enter a valid amount.");
+ }
+ record.id=Date.now();
+ data[current].push(record);
+ try{
+ save();
+ }catch(err){
+ alert("Storage is full. Please download a backup and remove some data.");
+ return;
+ }
+ e.target.reset();
+ renderRecords();
+ showOverview();
+ alert("Record saved successfully!");
+});
+
+document.getElementById("backup").onclick=()=>{
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;a.download="my-farm-backup.json";a.click();
+ URL.revokeObjectURL(url);
+};
+
+save();
+openTab("overview");
 </script>
 </body>
 </html>
-
 
